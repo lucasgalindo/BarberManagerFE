@@ -1,10 +1,18 @@
+import 'package:barbermanager_fe/view_models/AuthProvider.dart';
 import 'package:barbermanager_fe/views/Initalscreen.dart';
 import 'package:barbermanager_fe/views/Loginscreen.dart';
+import 'package:barbermanager_fe/views/protected/firstEntryLogin.dart';
 import 'package:barbermanager_fe/views/registerPage.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => AuthProvider(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -20,7 +28,9 @@ class MyApp extends StatelessWidget {
         "/": (context) => Initialscreen(),
         "/login": (context) => LoginScreen(),
         "/register": (context) => RegisterPage(),
+        "/first_entry" : (context) => FirstEntryLogin()
       },
+      
     );
   }
 }

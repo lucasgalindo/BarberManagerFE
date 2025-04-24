@@ -1,4 +1,6 @@
+import 'package:barbermanager_fe/view_models/AuthProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class LoginViewModel extends ChangeNotifier {
   String email = '';
@@ -14,12 +16,8 @@ class LoginViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void login() {
-    if (email.isNotEmpty && password.isNotEmpty) {
-      print("Login com: $email e $password");
-      // Aqui poderia chamar um AuthService, Firebase, etc.
-    } else {
-      print("Preencha todos os campos!");
-    }
+  void login(context) {
+    Provider.of<AuthProvider>(context, listen: false).login();
+    Navigator.pushReplacementNamed(context, '/home');
   }
 }

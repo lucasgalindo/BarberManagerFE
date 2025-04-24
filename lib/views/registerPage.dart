@@ -1,3 +1,4 @@
+import 'package:barbermanager_fe/models/userTypeModel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../view_models/registerViewModel.dart';
@@ -7,7 +8,8 @@ import '../widgets/textInputField.dart';
 class RegisterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    
+    var userType = ModalRoute.of(context)!.settings.arguments;
+    print(userType);
     final screenSize = MediaQuery.sizeOf(context);
     return ChangeNotifierProvider(
       create: (_) => RegisterViewModel(),
@@ -85,7 +87,7 @@ class RegisterPage extends StatelessWidget {
                     onChanged: viewModel.toggleAgreeToTerms,
                     title: const Text.rich(
                       TextSpan(
-                        text: "Concordo com os ",
+                        text: "Concordo com os",
                         style: TextStyle(color: Colors.white),
                         children: [
                           TextSpan(
