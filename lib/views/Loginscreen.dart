@@ -29,7 +29,6 @@ class LoginScreen extends StatelessWidget {
                 ),
                 child: Stack(
                   children: [
-                    
                     SingleChildScrollView(
                       child: ConstrainedBox(
                         constraints: BoxConstraints(
@@ -81,14 +80,19 @@ class LoginScreen extends StatelessWidget {
                                       const SizedBox(height: 16),
                                       PrimaryButton(
                                         text: "Entrar",
-                                        onPressed: () => viewModel.login(context),
+                                        onPressed:
+                                            () => viewModel.login(context),
                                         borderRadius: 24,
                                       ),
                                       const SizedBox(height: 24),
                                       Center(
                                         child: TextButton(
                                           onPressed: () {
-                                            Navigator.pushNamed(context, '/register',  arguments: userType);
+                                            Navigator.pushNamed(
+                                              context,
+                                              '/register',
+                                              arguments: userType,
+                                            );
                                           },
                                           child: const Text.rich(
                                             TextSpan(
@@ -99,7 +103,7 @@ class LoginScreen extends StatelessWidget {
                                               children: [
                                                 TextSpan(
                                                   text:
-                                                      "Clique aqui para criar uma agora",
+                                                      " Clique aqui para criar uma agora",
                                                   style: TextStyle(
                                                     fontWeight: FontWeight.bold,
                                                     color: Colors.red,
@@ -120,8 +124,10 @@ class LoginScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                  Positioned(
-                      top: MediaQuery.of(context).padding.top + 16, // respeita o status bar
+                    Positioned(
+                      top:
+                          MediaQuery.of(context).padding.top +
+                          16, // respeita o status bar
                       left: 16,
                       child: Align(
                         alignment: Alignment.topLeft,

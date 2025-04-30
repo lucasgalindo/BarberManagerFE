@@ -18,6 +18,6 @@ class LoginViewModel extends ChangeNotifier {
 
   void login(context) {
     Provider.of<AuthProvider>(context, listen: false).login();
-    Navigator.pushReplacementNamed(context, '/home');
+    Navigator.pushNamed(context, '/seekservice');
   }
 }

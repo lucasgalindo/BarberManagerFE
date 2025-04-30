@@ -19,15 +19,29 @@ class TextInputField extends StatelessWidget {
       child: TextField(
         obscureText: obscureText,
         onChanged: onChanged,
-        style: const TextStyle(color: Colors.black),
+        style: const TextStyle(color: Color.fromRGBO(30, 30, 30, 100)),
         decoration: InputDecoration(
           filled: true,
-          
-          fillColor: Colors.white,
+
+          fillColor: const Color.fromRGBO(30, 30, 30, 80),
           hintText: hintText,
-          hintStyle: const TextStyle(color: Colors.grey),
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          hintStyle: const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide.none,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide.none,
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide.none,
+          ),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 14,
+          ),
         ),
       ),
     );
