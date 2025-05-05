@@ -1,9 +1,11 @@
-import 'package:barbermanager_fe/view_models/AuthProvider.dart';
-import 'package:barbermanager_fe/views/Initalscreen.dart';
-import 'package:barbermanager_fe/views/Loginscreen.dart';
-import 'package:barbermanager_fe/views/SeekServicescreen.dart';
-import 'package:barbermanager_fe/views/protected/firstEntryLogin.dart';
-import 'package:barbermanager_fe/views/registerPage.dart';
+import 'package:barbermanager_fe/view_models/auth_provider.dart';
+import 'package:barbermanager_fe/views/initial_screen.dart';
+import 'package:barbermanager_fe/views/login_screen.dart';
+import 'package:barbermanager_fe/views/embedded_protected_screendart';
+import 'package:barbermanager_fe/views/embedded_public_screen.dart';
+import 'package:barbermanager_fe/views/protected/first_entry_login.dart';
+import 'package:barbermanager_fe/views/protected/home_view.dart';
+import 'package:barbermanager_fe/views/register_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,13 +21,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(fontFamily: "Poppins"),
+      theme: ThemeData(fontFamily: "Poppins", colorScheme: ColorScheme.dark(primary: Colors.black, secondary: Colors.white)),
       routes: {
-        "/": (context) => Initialscreen(),
-        "/login": (context) => LoginScreen(),
-        "/register": (context) => RegisterPage(),
-        "/first_entry": (context) => FirstEntryLogin(),
-        "/seekservice": (context) => Seekservicescreen(),
+        "/": (context) => EmbeddedPublicScreen(child: Initialscreen()),
+        "/login": (context) => EmbeddedPublicScreen(child: LoginScreen()),
+        "/register": (context) => EmbeddedPublicScreen(child: RegisterPage()),
+        "/first_entry": (context) => EmbeddedProtectedScreen(child: FirstEntryLogin()),
+        "/home": (context) => EmbeddedProtectedScreen(child: HomeView())
       },
     );
   }
