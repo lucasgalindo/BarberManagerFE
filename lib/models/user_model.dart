@@ -5,7 +5,7 @@ class UserModel {
   String birthDate;
   String password;
   String confirmPassword;
-  
+
   UserModel({
     this.username = '',
     this.email = '',
@@ -14,5 +14,4 @@ class UserModel {
     this.password = '',
     this.confirmPassword = '',
   });
-  
 }

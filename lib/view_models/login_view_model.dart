@@ -1,4 +1,5 @@
 import 'package:barbermanager_fe/repositories/user_repository.dart';
+import 'package:barbermanager_fe/utils/shared_preferences_utils.dart';
 import 'package:barbermanager_fe/view_models/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -30,7 +31,7 @@ class LoginViewModel extends ChangeNotifier {
   void login(context) {
     var result = UserRepository.instance.findInDb(email, password);
     if (result.isNotEmpty) {
-
+      setUserData(result);
       if (result["preference"] == null) {
         firstLogin(context, result["token"]);
         return;
