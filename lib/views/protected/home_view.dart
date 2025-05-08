@@ -199,7 +199,6 @@ class _HomeViewState extends State<HomeView> {
     return Padding(
       padding: const EdgeInsets.only(right: 8),
       child: BoxOfCarousel(
-        selected,
         isSelected: selected,
         child: Center(
           child: Text(title, style: const TextStyle(color: Colors.white)),
