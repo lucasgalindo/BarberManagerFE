@@ -178,13 +178,8 @@ class _HomeViewState extends State<HomeView> {
                               context,
                               MaterialPageRoute(
                                 builder:
-                                    (context) => BarbershopDetailsView(
-                                      shopName: shop.name,
-                                      imageUrl: shop.imageUrl,
-                                      address: shop.address,
-                                      rating: shop.rating,
-                                      phoneNumber: shop.phone,
-                                    ),
+                                    (context) =>
+                                        BarbershopDetailsView(barbershop: shop),
                               ),
                             );
                           },

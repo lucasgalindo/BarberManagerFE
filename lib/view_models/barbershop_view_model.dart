@@ -8,14 +8,38 @@ class BarbershopViewModel {
         address: 'Avenida São Pedro, 123, Fundão, Recife - PE',
         rating: 4.5,
         phone: '(81)99900-2190',
-        imageUrl: 'https://res.cloudinary.com/dnnhfgiu5/image/upload/v1746150345/ddraiux7htox7tqi1lot.png',
+        imageUrl:
+            'https://res.cloudinary.com/dnnhfgiu5/image/upload/v1746150345/ddraiux7htox7tqi1lot.png',
+        workingHours: {
+          "Segunda": "09:00 - 18:00",
+          "Terça": "09:00 - 18:00",
+          "Quarta": "09:00 - 18:00",
+          "Quinta": "09:00 - 18:00",
+          "Sexta": "09:00 - 18:00",
+          "Sábado": "09:00 - 14:00",
+          "Domingo": "Fechado",
+        },
+        description:
+            "Uma barbearia tradicional com atendimento de qualidade e ambiente acolhedor.",
       ),
       Barbershop(
         name: 'Jokers Barbers',
         address: 'Rua Pedro Jorge, 1423, Setubal, Recife - PE',
         rating: 4.7,
         phone: '(81)99420-2190',
-        imageUrl: 'https://res.cloudinary.com/dnnhfgiu5/image/upload/v1746150345/ddraiux7htox7tqi1lot.png',
+        imageUrl:
+            'https://res.cloudinary.com/dnnhfgiu5/image/upload/v1746150345/ddraiux7htox7tqi1lot.png',
+        workingHours: {
+          "Segunda": "10:00 - 19:00",
+          "Terça": "10:00 - 19:00",
+          "Quarta": "10:00 - 19:00",
+          "Quinta": "10:00 - 19:00",
+          "Sexta": "10:00 - 19:00",
+          "Sábado": "08:00 - 16:00",
+          "Domingo": "Fechado",
+        },
+        description:
+            "Barbearia moderna com profissionais experientes e serviços premium.",
       ),
     ];
   }

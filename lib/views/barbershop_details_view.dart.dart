@@ -1,21 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:barbermanager_fe/widgets/primary_button.dart';
+import '../models/barber_shop.dart';
+import '../widgets/primary_button.dart';
 
 class BarbershopDetailsView extends StatelessWidget {
-  final String shopName;
-  final String imageUrl;
-  final String address;
-  final double rating;
-  final String phoneNumber;
+  final Barbershop barbershop;
 
-  const BarbershopDetailsView({
-    Key? key,
-    required this.shopName,
-    required this.imageUrl,
-    required this.address,
-    required this.rating,
-    required this.phoneNumber,
-  }) : super(key: key);
+  const BarbershopDetailsView({Key? key, required this.barbershop})
+    : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +22,7 @@ class BarbershopDetailsView extends StatelessWidget {
           },
         ),
         title: Text(
-          shopName,
+          barbershop.name,
           style: const TextStyle(
             color: Colors.white,
             fontSize: 18,
@@ -52,16 +43,15 @@ class BarbershopDetailsView extends StatelessWidget {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child: Image.network(
-                    imageUrl,
+                    barbershop.imageUrl,
                     width: double.infinity,
                     height: 200,
                     fit: BoxFit.cover,
                   ),
                 ),
                 const SizedBox(height: 18),
-                // Endereço da barbearia
                 Text(
-                  address,
+                  barbershop.address,
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 14,
@@ -69,13 +59,12 @@ class BarbershopDetailsView extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-                // Avaliação e telefone da barbearia
                 Row(
                   children: [
                     const Icon(Icons.star, color: Colors.yellow, size: 12),
                     const SizedBox(width: 4),
                     Text(
-                      rating.toStringAsFixed(1),
+                      barbershop.rating.toStringAsFixed(1),
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 14,
@@ -86,7 +75,7 @@ class BarbershopDetailsView extends StatelessWidget {
                     const Icon(Icons.phone, color: Colors.white, size: 12),
                     const SizedBox(width: 4),
                     Text(
-                      phoneNumber,
+                      barbershop.phone,
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 14,
@@ -96,7 +85,6 @@ class BarbershopDetailsView extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 18),
-                // Horário de funcionamento
                 Text(
                   "Horário de funcionamento",
                   style: const TextStyle(
@@ -106,26 +94,21 @@ class BarbershopDetailsView extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.access_time,
-                      color: Colors.white,
-                      size: 25,
-                    ),
-                    const SizedBox(width: 4),
-                    const Text(
-                      'Seg - Sex 09:00 - 18:00',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ],
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children:
+                      barbershop.workingHours.entries.map((entry) {
+                        return Text(
+                          "${entry.key}: ${entry.value}",
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        );
+                      }).toList(),
                 ),
                 const SizedBox(height: 18),
-                // Descrição da barbearia
                 const Text(
                   "Descrição",
                   style: TextStyle(
@@ -135,9 +118,9 @@ class BarbershopDetailsView extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-                const Text(
-                  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-                  style: TextStyle(
+                Text(
+                  barbershop.description,
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 14,
                     fontWeight: FontWeight.w400,
@@ -145,12 +128,11 @@ class BarbershopDetailsView extends StatelessWidget {
                 ),
               ],
             ),
-            // Botão de agendar
             Center(
               child: PrimaryButton(
                 text: "Agendar",
                 onPressed: () {
-                  // Lógica para ir à proxima tela de escolhar de serviços.
+                  // Lógica para ir à próxima tela de escolha de serviços.
                 },
               ),
             ),
