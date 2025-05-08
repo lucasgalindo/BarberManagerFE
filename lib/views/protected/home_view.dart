@@ -1,6 +1,7 @@
 import 'package:barbermanager_fe/utils/shared_preferences_utils.dart';
 import 'package:barbermanager_fe/view_models/auth_provider.dart';
 import 'package:barbermanager_fe/view_models/barbershop_view_model.dart';
+import 'package:barbermanager_fe/views/barbershop_details_view.dart.dart';
 import 'package:barbermanager_fe/widgets/barber_shop_card.dart';
 import 'package:barbermanager_fe/widgets/box_of_carousel.dart';
 import 'package:flutter/material.dart';
@@ -170,7 +171,25 @@ class _HomeViewState extends State<HomeView> {
                     child: ListView.builder(
                       itemCount: barbershops.length,
                       itemBuilder: (context, index) {
-                        return BarbershopCard(shop: barbershops[index]);
+                        final shop = barbershops[index];
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => BarbershopDetailsView(
+                                      shopName: shop.name,
+                                      imageUrl: shop.imageUrl,
+                                      address: shop.address,
+                                      rating: shop.rating,
+                                      phoneNumber: shop.phone,
+                                    ),
+                              ),
+                            );
+                          },
+                          child: BarbershopCard(shop: shop),
+                        );
                       },
                     ),
                   ),
