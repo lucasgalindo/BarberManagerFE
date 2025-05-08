@@ -1,3 +1,19 @@
+class BarberService {
+  final String name;
+  final double price;
+  final String duration;
+  final String category;
+  final String description;
+
+  BarberService({
+    required this.name,
+    required this.price,
+    required this.duration,
+    required this.category,
+    required this.description,
+  });
+}
+
 class Barbershop {
   final String name;
   final String address;
@@ -6,6 +22,8 @@ class Barbershop {
   final String imageUrl;
   final Map<String, String> workingHours;
   final String description;
+  final List<String> categories;
+  final List<BarberService> services;
 
   Barbershop({
     required this.name,
@@ -15,5 +33,7 @@ class Barbershop {
     required this.imageUrl,
     required this.workingHours,
     required this.description,
+    required this.categories,
+    required this.services,
   });
 }

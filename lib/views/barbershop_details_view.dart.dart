@@ -1,3 +1,4 @@
+import 'package:barbermanager_fe/views/barbershop_services_view.dart';
 import 'package:flutter/material.dart';
 import '../models/barber_shop.dart';
 import '../widgets/primary_button.dart';
@@ -132,7 +133,16 @@ class BarbershopDetailsView extends StatelessWidget {
               child: PrimaryButton(
                 text: "Agendar",
                 onPressed: () {
-                  // Lógica para ir à próxima tela de escolha de serviços.
+                  print(barbershop);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (context) => BarbershopServicesView(
+                            barbershop: barbershop, // Passa o objeto barbershop
+                          ),
+                    ),
+                  );
                 },
               ),
             ),
