@@ -1,4 +1,5 @@
-import '../models/barber_shop.dart';
+import 'package:barbermanager_fe/models/barber.dart';
+import 'package:barbermanager_fe/models/barber_shop.dart';
 
 class BarbershopViewModel {
   List<Barbershop> getBarbershops() {
@@ -35,19 +36,29 @@ class BarbershopViewModel {
             category: "Coloração",
             description: "Coloração capilar para um visual renovado.",
           ),
-          BarberService(
-            name: "Coloração",
-            price: 50.0,
-            duration: "45 min",
-            category: "Coloração",
-            description: "Coloração capilar para um visual renovado.",
+        ],
+        team: [
+          Barber(
+            name: "João Silva",
+            imageUrl:
+                "https://res.cloudinary.com/dnnhfgiu5/image/upload/v1746150345/ddraiux7htox7tqi1lot.png",
+            description: "Ótimo barbeiro com experiência em cortes modernos.",
+            services: ["Corte Masculino", "Barba"],
           ),
-          BarberService(
-            name: "Coloração",
-            price: 50.0,
-            duration: "45 min",
-            category: "Coloração",
-            description: "Coloração capilar para um visual renovado.",
+          Barber(
+            name: "Carlos Souza",
+            imageUrl:
+                "https://res.cloudinary.com/dnnhfgiu5/image/upload/v1746150345/ddraiux7htox7tqi1lot.png",
+            description: "Ótimo barbeiro com experiência em coloração.",
+            services: ["Coloração", "Barba"],
+          ),
+          Barber(
+            name: "Pedro Santos",
+            imageUrl:
+                "https://res.cloudinary.com/dnnhfgiu5/image/upload/v1746150345/ddraiux7htox7tqi1lot.png",
+            description:
+                "Ótimo barbeiro com experiência em cortes modernos masculinos.",
+            services: ["Corte Masculino"],
           ),
         ],
       ),
@@ -82,6 +93,22 @@ class BarbershopViewModel {
             duration: "60 min",
             category: "Relaxamento",
             description: "Relaxamento capilar para cabelos volumosos.",
+          ),
+        ],
+        team: [
+          Barber(
+            name: "Lucas Almeida",
+            imageUrl:
+                "https://res.cloudinary.com/dnnhfgiu5/image/upload/v1746150345/ddraiux7htox7tqi1lot.png",
+            description: "Ótimo barbeiro com experiência em cortes modernos.",
+            services: ["Corte Premium", "Relaxamento Capilar"],
+          ),
+          Barber(
+            name: "Ricardo Lima",
+            imageUrl:
+                "https://res.cloudinary.com/dnnhfgiu5/image/upload/v1746150345/ddraiux7htox7tqi1lot.png",
+            description: "Ótimo barbeiro com experiência em cortes modernos.",
+            services: ["Barba Completa", "Relaxamento Capilar"],
           ),
         ],
       ),

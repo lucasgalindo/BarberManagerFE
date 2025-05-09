@@ -1,64 +1,56 @@
 import 'package:flutter/material.dart';
 
 class BarberChoiceCard extends StatelessWidget {
+  final String name;
   final String imageUrl;
-  final String title;
   final String description;
+  final VoidCallback onTap;
 
   const BarberChoiceCard({
-    super.key,
+    Key? key,
+    required this.name,
     required this.imageUrl,
-    required this.title,
     required this.description,
-  });
+    required this.onTap,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: const Color.fromRGBO(30, 30, 30, 0.2),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: const Color.fromRGBO(30, 30, 30, 0.5),
-          width: 1,
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: const Color.fromRGBO(30, 30, 30, 0.2),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: const Color.fromRGBO(30, 30, 30, 0.5),
+            width: 1,
+          ),
         ),
-      ),
-      child: Row(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: Image.network(
-              imageUrl,
-              width: 60,
-              height: 60,
-              fit: BoxFit.cover,
-            ),
-          ),
-          const SizedBox(width: 4),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                ),
+        child: Row(
+          children: [
+            CircleAvatar(backgroundImage: NetworkImage(imageUrl), radius: 30),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    name,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(description),
+                ],
               ),
-              const SizedBox(height: 4),
-              Text(
-                description,
-                style: const TextStyle(
-                  color: Color.fromRGBO(255, 255, 255, 0.8),
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
-              )
-            ],
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }
