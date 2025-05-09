@@ -1,3 +1,5 @@
+import 'package:barbermanager_fe/models/barber.dart';
+
 class BarberService {
   final String name;
   final double price;
@@ -24,6 +26,7 @@ class Barbershop {
   final String description;
   final List<String> categories;
   final List<BarberService> services;
+  final List<Barber> team;
 
   Barbershop({
     required this.name,
@@ -35,5 +38,6 @@ class Barbershop {
     required this.description,
     required this.categories,
     required this.services,
+    required this.team,
   });
 }

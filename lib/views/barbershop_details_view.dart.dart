@@ -12,7 +12,6 @@ class BarbershopDetailsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 0, 0, 0),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -133,14 +132,12 @@ class BarbershopDetailsView extends StatelessWidget {
               child: PrimaryButton(
                 text: "Agendar",
                 onPressed: () {
-                  print(barbershop);
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder:
-                          (context) => BarbershopServicesView(
-                            barbershop: barbershop, // Passa o objeto barbershop
-                          ),
+                          (context) =>
+                              BarbershopServicesView(barbershop: barbershop),
                     ),
                   );
                 },

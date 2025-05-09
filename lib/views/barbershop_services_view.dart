@@ -1,3 +1,4 @@
+import 'package:barbermanager_fe/views/BarberChoiceView.dart';
 import 'package:flutter/material.dart';
 import 'package:barbermanager_fe/widgets/box_of_carousel.dart';
 import 'package:barbermanager_fe/widgets/BarberServiceCard.dart';
@@ -34,7 +35,6 @@ class _BarbershopServicesViewState extends State<BarbershopServicesView> {
         }).toList();
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 0, 0, 0),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -97,10 +97,24 @@ class _BarbershopServicesViewState extends State<BarbershopServicesView> {
                             (context, index) => const SizedBox(height: 12),
                         itemBuilder: (context, index) {
                           final service = filteredServices[index];
-                          return BarberServiceCard(
-                            title: service.name,
-                            description: service.description,
-                            price: "R\$ ${service.price.toStringAsFixed(2)}",
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => BarberChoiceView(
+                                        team: widget.barbershop.team,
+                                        selectedService: service,
+                                      ),
+                                ),
+                              );
+                            },
+                            child: BarberServiceCard(
+                              title: service.name,
+                              description: service.description,
+                              price: "R\$ ${service.price.toStringAsFixed(2)}",
+                            ),
                           );
                         },
                       )
