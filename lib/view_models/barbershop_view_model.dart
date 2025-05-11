@@ -1,5 +1,6 @@
 import 'package:barbermanager_fe/models/barber.dart';
 import 'package:barbermanager_fe/models/barber_shop.dart';
+import 'package:barbermanager_fe/models/barberservice.dart';
 
 class BarbershopViewModel {
   List<Barbershop> getBarbershops() {
@@ -11,7 +12,15 @@ class BarbershopViewModel {
         phone: '(81)99900-2190',
         imageUrl:
             'https://res.cloudinary.com/dnnhfgiu5/image/upload/v1746150345/ddraiux7htox7tqi1lot.png',
-        workingHours: {"Segunda": "09:00 - 18:00", "Terça": "09:00 - 18:00"},
+        workingHours: {
+          "Segunda": "09:00 - 18:00",
+          "Terça": "09:00 - 18:00",
+          "Quarta": "09:00 - 18:00",
+          "Quinta": "09:00 - 18:00",
+          "Sexta": "09:00 - 18:00",
+          "Sábado": "09:00 - 14:00",
+          "Domingo": "Fechado",
+        },
         description: "Uma barbearia tradicional com atendimento de qualidade.",
         categories: ["Corte", "Barba", "Coloração"],
         services: [
@@ -44,6 +53,8 @@ class BarbershopViewModel {
                 "https://res.cloudinary.com/dnnhfgiu5/image/upload/v1746150345/ddraiux7htox7tqi1lot.png",
             description: "Ótimo barbeiro com experiência em cortes modernos.",
             services: ["Corte Masculino", "Barba"],
+            availableTimes: ["09:00", "10:00", "11:00", "14:00", "15:00"],
+            reservedTimes: ["10:00"], // Exemplo de horário reservado
           ),
           Barber(
             name: "Carlos Souza",
@@ -51,14 +62,8 @@ class BarbershopViewModel {
                 "https://res.cloudinary.com/dnnhfgiu5/image/upload/v1746150345/ddraiux7htox7tqi1lot.png",
             description: "Ótimo barbeiro com experiência em coloração.",
             services: ["Coloração", "Barba"],
-          ),
-          Barber(
-            name: "Pedro Santos",
-            imageUrl:
-                "https://res.cloudinary.com/dnnhfgiu5/image/upload/v1746150345/ddraiux7htox7tqi1lot.png",
-            description:
-                "Ótimo barbeiro com experiência em cortes modernos masculinos.",
-            services: ["Corte Masculino"],
+            availableTimes: ["10:00", "11:00", "13:00", "16:00"],
+            reservedTimes: ["13:00"], // Exemplo de horário reservado
           ),
         ],
       ),
@@ -69,7 +74,15 @@ class BarbershopViewModel {
         phone: '(81)99420-2190',
         imageUrl:
             'https://res.cloudinary.com/dnnhfgiu5/image/upload/v1746150345/ddraiux7htox7tqi1lot.png',
-        workingHours: {"Segunda": "10:00 - 19:00", "Terça": "10:00 - 19:00"},
+        workingHours: {
+          "Segunda": "10:00 - 19:00",
+          "Terça": "10:00 - 19:00",
+          "Quarta": "10:00 - 19:00",
+          "Quinta": "10:00 - 19:00",
+          "Sexta": "10:00 - 19:00",
+          "Sábado": "09:00 - 15:00",
+          "Domingo": "Fechado",
+        },
         description: "Barbearia moderna com serviços premium.",
         categories: ["Corte", "Barba", "Relaxamento"],
         services: [
@@ -102,6 +115,8 @@ class BarbershopViewModel {
                 "https://res.cloudinary.com/dnnhfgiu5/image/upload/v1746150345/ddraiux7htox7tqi1lot.png",
             description: "Ótimo barbeiro com experiência em cortes modernos.",
             services: ["Corte Premium", "Relaxamento Capilar"],
+            availableTimes: ["10:00", "11:30", "14:00", "16:00"],
+            reservedTimes: ["11:30"], // Exemplo de horário reservado
           ),
           Barber(
             name: "Ricardo Lima",
@@ -109,6 +124,8 @@ class BarbershopViewModel {
                 "https://res.cloudinary.com/dnnhfgiu5/image/upload/v1746150345/ddraiux7htox7tqi1lot.png",
             description: "Ótimo barbeiro com experiência em cortes modernos.",
             services: ["Barba Completa", "Relaxamento Capilar"],
+            availableTimes: ["09:30", "11:00", "13:30", "15:30"],
+            reservedTimes: ["15:30"], // Exemplo de horário reservado
           ),
         ],
       ),

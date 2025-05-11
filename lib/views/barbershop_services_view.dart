@@ -1,5 +1,6 @@
 import 'package:barbermanager_fe/views/BarberChoiceView.dart';
 import 'package:flutter/material.dart';
+import '../models/barber_shop.dart';
 import 'package:barbermanager_fe/widgets/box_of_carousel.dart';
 import 'package:barbermanager_fe/widgets/BarberServiceCard.dart';
 import 'package:barbermanager_fe/models/barber_shop.dart';
@@ -106,6 +107,8 @@ class _BarbershopServicesViewState extends State<BarbershopServicesView> {
                                       (context) => BarberChoiceView(
                                         team: widget.barbershop.team,
                                         selectedService: service,
+                                        workingHours:
+                                            widget.barbershop.workingHours,
                                       ),
                                 ),
                               );
