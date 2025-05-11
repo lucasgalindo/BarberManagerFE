@@ -1,20 +1,5 @@
 import 'package:barbermanager_fe/models/barber.dart';
-
-class BarberService {
-  final String name;
-  final double price;
-  final String duration;
-  final String category;
-  final String description;
-
-  BarberService({
-    required this.name,
-    required this.price,
-    required this.duration,
-    required this.category,
-    required this.description,
-  });
-}
+import 'package:barbermanager_fe/models/barberservice.dart';
 
 class Barbershop {
   final String name;
