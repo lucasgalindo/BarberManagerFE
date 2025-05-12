@@ -1,25 +1,28 @@
 import 'package:barbermanager_fe/models/barber.dart';
+import 'package:barbermanager_fe/models/barber_shop.dart';
 import 'package:barbermanager_fe/models/barberservice.dart';
 import 'package:barbermanager_fe/views/DateTimeSelectionView.dart';
 import 'package:flutter/material.dart';
 import 'package:barbermanager_fe/widgets/BarberChoiceCard.dart';
 
 class BarberChoiceView extends StatelessWidget {
+  final Barbershop barbershop;
   final List<Barber> team;
   final BarberService selectedService;
-  final Map<String, String>
-  workingHours; // Horários de funcionamento da barbearia
+  final Map<String, String> workingHours;
+  final List<Map<String, dynamic>> previousServices;
 
   const BarberChoiceView({
     Key? key,
+    required this.barbershop,
     required this.team,
     required this.selectedService,
     required this.workingHours,
+    required this.previousServices,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // Filtra os barbeiros que realizam o serviço selecionado
     final filteredBarbers =
         team.where((barber) {
           return barber.services.contains(selectedService.name);
@@ -65,12 +68,11 @@ class BarberChoiceView extends StatelessWidget {
                           MaterialPageRoute(
                             builder:
                                 (context) => DateTimeSelectionView(
-                                  selectedBarber:
-                                      barber, // Passa o barbeiro selecionado
-                                  selectedService:
-                                      selectedService, // Passa o serviço selecionado
-                                  workingHours:
-                                      workingHours, // Passa os horários de funcionamento
+                                  barbershop: barbershop,
+                                  selectedBarber: barber,
+                                  selectedService: selectedService,
+                                  workingHours: workingHours,
+                                  previousServices: previousServices,
                                 ),
                           ),
                         );
