@@ -40,10 +40,34 @@ class MyApp extends StatelessWidget {
         "/home": (context) => EmbeddedProtectedScreen(child: HomeView()),
         "/services":
             (context) => EmbeddedProtectedScreen(
-              child: BarbershopServicesView(
-                barbershop:
-                    ModalRoute.of(context)!.settings.arguments
-                        as Barbershop, // Ajustar os parametros na tela de datetime, pois está gerando uma exception.
+              child: Builder(
+                builder: (context) {
+                  final arguments =
+                      ModalRoute.of(context)!.settings.arguments
+                          as Map<String, dynamic>?;
+
+                  if (arguments == null ||
+                      !arguments.containsKey('barbershop')) {
+                    // Exibe uma mensagem de erro ou redireciona para outra tela
+                    return const Center(
+                      child: Text(
+                        "Erro: Dados da barbearia não foram fornecidos.",
+                        style: TextStyle(color: Colors.white, fontSize: 16),
+                      ),
+                    );
+                  }
+
+                  final barbershop = arguments['barbershop'] as Barbershop;
+                  final previousServices =
+                      arguments['previousServices']
+                          as List<Map<String, dynamic>>? ??
+                      [];
+
+                  return BarbershopServicesView(
+                    barbershop: barbershop,
+                    previousServices: previousServices,
+                  );
+                },
               ),
             ),
       },

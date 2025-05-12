@@ -1,4 +1,10 @@
+// FALTA ADICIONAR UMA LOGICA PARA MANTER O MESMO VISUAL, E QUE AO VOLTAR PARA ADICIONAR OUTRO SERVIÇO
+// EXIBA TAMBEM O BARBEIRO E O SERVIÇO SELECIONADO NOVAMENTE, COM A POSSIBILIDADE DE ESCOLHER OUTRO HORARIO
+// E QUE O VALOR TOTAL SEJA SOMADO AO VALOR DO SERVIÇO SELECIONADO ANTERIORMENTE
+
 import 'package:barbermanager_fe/models/barber_shop.dart';
+import 'package:barbermanager_fe/utils/shared_preferences_utils.dart';
+import 'package:barbermanager_fe/views/SummaryView.dart';
 import 'package:barbermanager_fe/widgets/primary_button.dart';
 import 'package:flutter/material.dart';
 import 'package:barbermanager_fe/models/barber.dart';
@@ -9,12 +15,16 @@ class DateTimeSelectionView extends StatefulWidget {
   final Barber selectedBarber;
   final BarberService selectedService;
   final Map<String, String> workingHours;
+  final Barbershop barbershop;
+  final List<Map<String, dynamic>> previousServices;
 
   const DateTimeSelectionView({
     Key? key,
+    required this.barbershop,
     required this.selectedBarber,
     required this.selectedService,
     required this.workingHours,
+    required this.previousServices,
   }) : super(key: key);
 
   @override
@@ -68,7 +78,16 @@ class _DateTimeSelectionViewState extends State<DateTimeSelectionView> {
               currentTime.minute < closingTime.minute)) {
         final formattedTime =
             "${currentTime.hour.toString().padLeft(2, '0')}:${currentTime.minute.toString().padLeft(2, '0')}";
-        times.add(formattedTime);
+
+        // Verifica se o horário já foi reservado
+        final isUnavailable = widget.previousServices.any(
+          (service) =>
+              service['date'] == date && service['time'] == formattedTime,
+        );
+
+        if (!isUnavailable) {
+          times.add(formattedTime);
+        }
 
         final newMinute = currentTime.minute + 30;
         if (newMinute >= 60) {
@@ -204,7 +223,7 @@ class _DateTimeSelectionViewState extends State<DateTimeSelectionView> {
                 padding: const EdgeInsets.all(12.0),
                 decoration: BoxDecoration(
                   border: Border.all(
-                    color: Color.fromRGBO(30, 30, 30, 0.8),
+                    color: const Color.fromRGBO(30, 30, 30, 0.8),
                     width: 1.0,
                   ),
                   borderRadius: BorderRadius.circular(8.0),
@@ -262,7 +281,7 @@ class _DateTimeSelectionViewState extends State<DateTimeSelectionView> {
                                 Text(
                                   "Preço: R\$ ${widget.selectedService.price.toStringAsFixed(2)}",
                                   style: const TextStyle(
-                                    color: Color.fromARGB(255, 255, 255, 255),
+                                    color: Colors.white,
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -287,8 +306,7 @@ class _DateTimeSelectionViewState extends State<DateTimeSelectionView> {
             ),
             const SizedBox(height: 16),
 
-            // Se uma data for selecionada, exibe a mensagem de seleção de horário juntamente
-            // com a lista de horários disponíveis
+            // Lista de horários disponíveis
             if (selectedDate != null) ...[
               const Text(
                 "Selecione um horário:",
@@ -299,54 +317,34 @@ class _DateTimeSelectionViewState extends State<DateTimeSelectionView> {
                 ),
               ),
               const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children:
+                    availableTimes.map((time) {
+                      final isSelected = selectedTime == time;
+                      return BoxOfCarousel(
+                        isSelected: isSelected,
+                        onTap: () {
+                          setState(() {
+                            selectedTime = time;
+                          });
+                        },
+                        child: Text(
+                          time,
+                          style: const TextStyle(
+                            color: Colors.white70,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      );
+                    }).toList(),
+              ),
             ],
-
-            // Aqui é a lista de horários disponíveis
-            Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.all(12.0),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Color.fromRGBO(30, 30, 30, 0.8),
-                        width: 1.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: SingleChildScrollView(
-                      child: Wrap(
-                        alignment: WrapAlignment.start,
-                        spacing: 8,
-                        runSpacing: 8,
-                        children:
-                            availableTimes.map((time) {
-                              final isSelected = selectedTime == time;
-                              return BoxOfCarousel(
-                                isSelected: isSelected,
-                                onTap: () {
-                                  setState(() {
-                                    selectedTime = time;
-                                  });
-                                },
-                                child: Text(
-                                  time,
-                                  style: const TextStyle(
-                                    color: Colors.white70,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              );
-                            }).toList(),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
             const Spacer(),
 
+            // Botões de ação
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -386,10 +384,33 @@ class _DateTimeSelectionViewState extends State<DateTimeSelectionView> {
                       padding: const EdgeInsets.symmetric(vertical: 24.0),
                     ),
                     onPressed: () {
+                      if (selectedDate == null || selectedTime == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              "Por favor, selecione uma data e um horário antes de continuar.",
+                            ),
+                          ),
+                        );
+                        return;
+                      }
+
                       Navigator.pushNamed(
                         context,
                         '/services',
-                      ); // ajustar os parametros aqui, pois gera uma exception.
+                        arguments: {
+                          'barbershop': widget.barbershop,
+                          'previousServices': [
+                            ...widget.previousServices,
+                            {
+                              'service': widget.selectedService,
+                              'barber': widget.selectedBarber,
+                              'date': selectedDate,
+                              'time': selectedTime,
+                            },
+                          ],
+                        },
+                      );
                     },
                     child: const Text(
                       "Agendar mais serviços",
@@ -404,12 +425,50 @@ class _DateTimeSelectionViewState extends State<DateTimeSelectionView> {
                 const SizedBox(height: 16),
                 PrimaryButton(
                   text: "Finalizar",
-                  textStyle: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w100,
-                    fontSize: 20,
-                  ),
-                  onPressed: () {},
+                  onPressed: () async {
+                    if (selectedDate == null || selectedTime == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            "Por favor, selecione uma data e um horário antes de continuar.",
+                          ),
+                        ),
+                      );
+                      return;
+                    }
+
+                    final userData = await getUserData();
+                    final username = userData?['username'] ?? "Usuário";
+
+                    double totalPrice = widget.previousServices.fold<double>(
+                      0.0,
+                      (sum, service) => sum + service['service'].price,
+                    );
+                    totalPrice += widget.selectedService.price;
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) => SummaryView(
+                              clientName: username,
+                              barbershopName: widget.barbershop.name,
+                              barbershopAddress: widget.barbershop.address,
+                              barbershopPhone: widget.barbershop.phone,
+                              services: [
+                                ...widget.previousServices,
+                                {
+                                  'service': widget.selectedService,
+                                  'barber': widget.selectedBarber,
+                                  'date': selectedDate,
+                                  'time': selectedTime,
+                                },
+                              ],
+                              totalPrice: totalPrice.toStringAsFixed(2),
+                            ),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),

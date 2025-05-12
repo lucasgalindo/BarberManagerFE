@@ -3,13 +3,16 @@ import 'package:flutter/material.dart';
 import '../models/barber_shop.dart';
 import 'package:barbermanager_fe/widgets/box_of_carousel.dart';
 import 'package:barbermanager_fe/widgets/BarberServiceCard.dart';
-import 'package:barbermanager_fe/models/barber_shop.dart';
 
 class BarbershopServicesView extends StatefulWidget {
   final Barbershop barbershop;
+  final List<Map<String, dynamic>> previousServices;
 
-  const BarbershopServicesView({Key? key, required this.barbershop})
-    : super(key: key);
+  const BarbershopServicesView({
+    Key? key,
+    required this.barbershop,
+    required this.previousServices,
+  }) : super(key: key);
 
   @override
   _BarbershopServicesViewState createState() => _BarbershopServicesViewState();
@@ -60,6 +63,7 @@ class _BarbershopServicesViewState extends State<BarbershopServicesView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Carrossel de categorias
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
@@ -89,6 +93,7 @@ class _BarbershopServicesViewState extends State<BarbershopServicesView> {
             ),
             const SizedBox(height: 16),
 
+            // Lista de serviços filtrados
             Expanded(
               child:
                   filteredServices.isNotEmpty
@@ -105,10 +110,13 @@ class _BarbershopServicesViewState extends State<BarbershopServicesView> {
                                 MaterialPageRoute(
                                   builder:
                                       (context) => BarberChoiceView(
+                                        barbershop: widget.barbershop,
                                         team: widget.barbershop.team,
                                         selectedService: service,
                                         workingHours:
                                             widget.barbershop.workingHours,
+                                        previousServices:
+                                            widget.previousServices,
                                       ),
                                 ),
                               );

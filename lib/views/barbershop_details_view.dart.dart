@@ -136,8 +136,10 @@ class BarbershopDetailsView extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder:
-                          (context) =>
-                              BarbershopServicesView(barbershop: barbershop),
+                          (context) => BarbershopServicesView(
+                            barbershop: barbershop,
+                            previousServices: [],
+                          ),
                     ),
                   );
                 },
