@@ -13,7 +13,6 @@ class LoginScreen extends StatelessWidget {
     var userType = ModalRoute.of(context)!.settings.arguments;
     getTypeUser();
 
-
     return ChangeNotifierProvider(
       create: (_) => LoginViewModel(),
       child: Consumer<LoginViewModel>(

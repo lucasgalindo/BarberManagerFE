@@ -5,6 +5,7 @@ import 'package:barbermanager_fe/views/initial_screen.dart';
 import 'package:barbermanager_fe/views/login_screen.dart';
 import 'package:barbermanager_fe/views/embedded_protected_screendart';
 import 'package:barbermanager_fe/views/embedded_public_screen.dart';
+import 'package:barbermanager_fe/views/protected/barberView.dart';
 import 'package:barbermanager_fe/views/protected/first_entry_login.dart';
 import 'package:barbermanager_fe/views/protected/home_view.dart';
 import 'package:barbermanager_fe/views/register_page.dart';
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: "Poppins",
         colorScheme: ColorScheme.dark(
-          primary: Colors.black,
+          primary: const Color.fromARGB(255, 0, 0, 0),
           secondary: Colors.white,
         ),
       ),
@@ -38,6 +39,7 @@ class MyApp extends StatelessWidget {
         "/first_entry":
             (context) => EmbeddedProtectedScreen(child: FirstEntryLogin()),
         "/home": (context) => EmbeddedProtectedScreen(child: HomeView()),
+        "/barber": (context) => EmbeddedProtectedScreen(child: BarberView()),
         "/services":
             (context) => EmbeddedProtectedScreen(
               child: Builder(
