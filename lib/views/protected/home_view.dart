@@ -4,6 +4,7 @@ import 'package:barbermanager_fe/view_models/barbershop_view_model.dart';
 import 'package:barbermanager_fe/views/barbershop_details_view.dart.dart';
 import 'package:barbermanager_fe/widgets/barber_shop_card.dart';
 import 'package:barbermanager_fe/widgets/box_of_carousel.dart';
+import 'package:barbermanager_fe/widgets/custom_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -50,104 +51,7 @@ class _HomeViewState extends State<HomeView> {
         builder:
             (context, authViewModel, _) => Scaffold(
               appBar: AppBar(),
-              drawer: Drawer(
-                backgroundColor: Color.fromRGBO(30, 30, 30, 1),
-                child: SafeArea(
-                  child: Column(
-                    children: [
-                      DrawerHeader(
-                        margin: EdgeInsets.zero,
-                        padding: EdgeInsets.zero,
-                        child: Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              CircleAvatar(
-                                radius: 30,
-                                backgroundColor: Color.fromRGBO(23, 23, 180, 1),
-                                child: Icon(
-                                  Icons.person,
-                                  color: Colors.white,
-                                  size: 30,
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              Text(
-                                username,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Expanded(
-                        child: ListView(
-                          children: [
-                            ListTile(
-                              leading: const Icon(
-                                Icons.swap_horiz,
-                                color: Colors.white,
-                              ),
-                              title: const Text(
-                                'Procurar por Barbeiros', // Quando tiver na tela de Barbeiros, colocar uma logica para mudar o texto do botao
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              onTap: () {
-                                // Colocar lógica para trocar o tipo de busca
-                              },
-                            ),
-                            ListTile(
-                              leading: const Icon(
-                                Icons.favorite_border,
-                                color: Colors.white,
-                              ),
-                              title: const Text(
-                                'Favoritos',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              onTap: () {},
-                            ),
-                            ListTile(
-                              leading: const Icon(
-                                Icons.smart_toy_outlined,
-                                color: Colors.white,
-                              ),
-                              title: const Text(
-                                'ChatBot',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              onTap: () {
-                                // Abrir o chatbot com IA que iremos fazer.
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                      const Divider(color: Colors.white24),
-                      ListTile(
-                        leading: const Icon(
-                          Icons.logout,
-                          color: Colors.redAccent,
-                        ),
-                        title: const Text(
-                          'Sair',
-                          style: TextStyle(color: Colors.redAccent),
-                        ),
-                        onTap: () {
-                          authViewModel.logout(context);
-                        },
-                      ),
-                      const SizedBox(height: 12),
-                    ],
-                  ),
-                ),
-              ),
-
+              drawer: CustomDrawer(username: username),
               body: Column(
                 children: [
                   const SizedBox(height: 12),
