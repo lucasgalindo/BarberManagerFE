@@ -99,6 +99,16 @@ class CustomDrawer extends StatelessWidget {
                       // Abrir o chatbot com IA
                     },
                   ),
+                  ListTile(
+                    leading: const Icon(Icons.settings, color: Colors.white),
+                    title: const Text(
+                      'Configurações',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    onTap: () {
+                      // Abrir tela de configurações
+                    },
+                  ),
                 ],
               ),
             ),
