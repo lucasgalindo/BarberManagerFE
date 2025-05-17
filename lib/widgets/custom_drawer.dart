@@ -1,8 +1,11 @@
 import 'package:barbermanager_fe/view_models/auth_provider.dart';
+import 'package:barbermanager_fe/views/SettingsView.dart';
 import 'package:barbermanager_fe/views/protected/barberView.dart';
 import 'package:barbermanager_fe/views/protected/home_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:barbermanager_fe/utils/shared_preferences_utils.dart';
+import 'package:barbermanager_fe/views/SettingsView.dart';
 
 class CustomDrawer extends StatelessWidget {
   final String username;
@@ -105,8 +108,26 @@ class CustomDrawer extends StatelessWidget {
                       'Configurações',
                       style: TextStyle(color: Colors.white),
                     ),
-                    onTap: () {
-                      // Abrir tela de configurações
+                    onTap: () async {
+                      final userData = await getUserData();
+                      final userToken = userData?['token'] ?? '';
+                      if (userToken.isNotEmpty) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (context) => SettingsView(token: userToken),
+                          ),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'Usuário não encontrado ou não autenticado.',
+                            ),
+                          ),
+                        );
+                      }
                     },
                   ),
                 ],
