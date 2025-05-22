@@ -16,7 +16,10 @@ class BarberAutonomoCard extends StatelessWidget {
         child: Row(
           children: [
             CircleAvatar(
-              backgroundImage: NetworkImage(barber.imageUrl),
+              backgroundImage:
+                  barber.imageUrl != null && barber.imageUrl!.isNotEmpty
+                      ? NetworkImage(barber.imageUrl!)
+                      : null,
               radius: 30,
             ),
             const SizedBox(width: 12),
@@ -34,7 +37,7 @@ class BarberAutonomoCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    barber.description,
+                    barber.description ?? '',
                     style: const TextStyle(color: Colors.white70, fontSize: 14),
                   ),
                   const SizedBox(height: 4),

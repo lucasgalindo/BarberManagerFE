@@ -1,9 +1,11 @@
 import 'package:barbermanager_fe/utils/shared_preferences_utils.dart';
 import 'package:barbermanager_fe/view_models/BarberAutonomosViewModel.dart';
+import 'package:barbermanager_fe/views/BarberAutonomoDetailsView.dart';
 import 'package:barbermanager_fe/widgets/BarberAutonomoCard.dart';
 import 'package:barbermanager_fe/widgets/custom_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:barbermanager_fe/widgets/box_of_carousel.dart';
+import 'package:barbermanager_fe/models/barberAutonomos.dart';
 
 class BarberView extends StatefulWidget {
   const BarberView({super.key});
@@ -40,18 +42,18 @@ class _BarberViewState extends State<BarberView> {
   @override
   Widget build(BuildContext context) {
     final viewModel = BarberAutonomosViewModel();
-    final barbers = viewModel.getBarberAutonomos();
+    final List<Barberautonomos> barbers = viewModel.getBarberAutonomos();
 
     final filteredBarbers =
         selectedFilter == null
             ? barbers
             : barbers.where((barber) {
               if (selectedFilter == "Melhores Avaliados") {
-                return barber.rating >= 4.5;
+                return (barber.rating ?? 0) >= 4.5;
               } else if (selectedFilter == "Mais Próximos") {
-                return barber.address.contains("Rua");
+                return (barber.address ?? "").contains("Rua");
               } else if (selectedFilter == "Mais Experientes") {
-                return barber.description.contains("Experiência");
+                return (barber.description ?? "").contains("Experiência");
               }
               return true;
             }).toList();
@@ -98,7 +100,14 @@ class _BarberViewState extends State<BarberView> {
                 final barber = filteredBarbers[index];
                 return GestureDetector(
                   onTap: () {
-                    // Lógica para navegar para a tela de detalhes do barbeiro
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) =>
+                                BarberAutonomoDetailsView(barber: barber),
+                      ),
+                    );
                   },
                   child: BarberAutonomoCard(barber: barber),
                 );
