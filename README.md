@@ -1,16 +1,82 @@
-# barbermanager_fe
+# BarberManagerFE
 
-A new Flutter project.
+Aplicativo mobile desenvolvido em Flutter como Projeto de Conclusão de Curso, com foco em conectar barbeiros autônomos e barbearias a clientes que desejam praticidade para agendar serviços de barbearia, inclusive com opção de atendimento a domicílio.
 
-## Getting Started
+## Visão Geral
 
-This project is a starting point for a Flutter application.
+O **BarberManager** facilita a vida tanto de clientes quanto de barbeiros e barbearias, oferecendo um sistema inteligente e ágil para agendamentos, avaliações, notificações e muito mais.
 
-A few resources to get you started if this is your first Flutter project:
+## Funcionalidades
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- Agendamento de serviços com seleção de data, local e profissional
+- Atendimento a domicílio com uso de geolocalização
+- Cadastro de barbeiros e serviços
+- Avaliação de serviços pelos clientes
+- Comunicação direta entre cliente e barbeiro
+- Notificações automáticas e lembretes
+- Histórico de agendamentos
+- Gerenciamento de equipe de barbeiros
+- Configuração de preços e promoções
+- Coleta de feedback de usuários
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Tecnologias Utilizadas
+
+- [Flutter](https://flutter.dev/)
+- [Dart](https://dart.dev/)
+- [Google Maps API](https://developers.google.com/maps) (localização e rotas)
+
+## Estrutura do Projeto
+
+- `lib/` – Código principal em Dart
+- `assets/` – Imagens, ícones e recursos estáticos
+- `fonts/` – Fontes personalizadas
+- `ios/`, `android/` – Configurações específicas de plataforma
+- `pubspec.yaml` – Dependências e configurações do Flutter
+
+## Como Executar o Projeto
+
+1. Clone o repositório:
+
+   ```bash
+   git clone https://github.com/lucasgalindo/BarberManagerFE.git 
+   ```
+
+2. Acesse o diretório do projeto:
+
+   ```bash
+   cd BarberManagerFE
+    ```
+
+3. Instale as dependências:
+
+   ```bash
+   flutter pub get
+    ```
+
+4. Execute o projeto:
+
+   ```bash
+   flutter run
+   ```
+
+> 💡 É necessário ter o Flutter instalado e configurado. Consulte a [documentação oficial](https://docs.flutter.dev/get-started/install) para instruções.
+
+## Roadmap
+
+* [x] Seleção de serviço
+* [x] Escolha de local
+* [x] Seleção de barbeiros
+* [x] Confirmação de agendamento
+* [ ] Escolha de método de pagamento
+* [ ] Integração completa com notificações push
+* [ ] Painel para gestão da agenda do barbeiro
+* [ ] Histórico detalhado para clientes e profissionais
+
+## Equipe
+
+* **Lucas Galindo** 
+* **Anthony Thiago**
+* **Lucas Emanuel**
+* **Lucas Gomes**
+* **Matheus Antônio**
+* **Rodolfo Rodrigo**
