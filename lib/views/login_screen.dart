@@ -1,4 +1,3 @@
-import 'package:barbermanager_fe/models/user_creddentials.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../view_models/login_view_model.dart';
@@ -11,8 +10,7 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.sizeOf(context);
     var userType = ModalRoute.of(context)!.settings.arguments;
-    getTypeUser();
-
+    print(userType);
     return ChangeNotifierProvider(
       create: (_) => LoginViewModel(),
       child: Consumer<LoginViewModel>(
@@ -81,7 +79,10 @@ class LoginScreen extends StatelessWidget {
                                       PrimaryButton(
                                         text: "Entrar",
                                         onPressed:
-                                            () => viewModel.login(context),
+                                            () => viewModel.login(
+                                              context,
+                                              userType,
+                                            ),
                                         borderRadius: 24,
                                       ),
                                       const SizedBox(height: 24),
@@ -125,9 +126,7 @@ class LoginScreen extends StatelessWidget {
                       ),
                     ),
                     Positioned(
-                      top:
-                          MediaQuery.of(context).padding.top +
-                          16, // respeita o status bar
+                      top: MediaQuery.of(context).padding.top + 16, // respeita o status bar
                       left: 16,
                       child: Align(
                         alignment: Alignment.topLeft,

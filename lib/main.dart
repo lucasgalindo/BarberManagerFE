@@ -1,15 +1,15 @@
 import 'package:barbermanager_fe/models/barber_shop.dart';
 import 'package:barbermanager_fe/view_models/auth_provider.dart';
 import 'package:barbermanager_fe/views/barbershop_services_view.dart';
+import 'package:barbermanager_fe/views/chat_view.dart';
 import 'package:barbermanager_fe/views/initial_screen.dart';
 import 'package:barbermanager_fe/views/login_screen.dart';
-import 'package:barbermanager_fe/views/embedded_protected_screendart';
+import 'package:barbermanager_fe/views/embedded_protected_screen.dart';
 import 'package:barbermanager_fe/views/embedded_public_screen.dart';
-import 'package:barbermanager_fe/views/protected/barberView.dart';
+import 'package:barbermanager_fe/views/protected/barber_view.dart';
 import 'package:barbermanager_fe/views/protected/first_entry_login.dart';
 import 'package:barbermanager_fe/views/protected/home_view.dart';
 import 'package:barbermanager_fe/views/register_page.dart';
-import 'package:barbermanager_fe/views/barbershop_services_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -40,6 +40,7 @@ class MyApp extends StatelessWidget {
             (context) => EmbeddedProtectedScreen(child: FirstEntryLogin()),
         "/home": (context) => EmbeddedProtectedScreen(child: HomeView()),
         "/barber": (context) => EmbeddedProtectedScreen(child: BarberView()),
+        "/chat": (context) => EmbeddedProtectedScreen(child: ChatView()),
         "/services":
             (context) => EmbeddedProtectedScreen(
               child: Builder(

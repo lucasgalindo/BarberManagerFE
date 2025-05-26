@@ -54,7 +54,7 @@ class RegisterViewModel extends ChangeNotifier {
   void submit() {
     if (validateForm()) {
     } else {
-      // mostrar erro
+      
     }
   }
 }

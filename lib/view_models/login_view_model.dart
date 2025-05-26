@@ -28,17 +28,20 @@ class LoginViewModel extends ChangeNotifier {
     Navigator.pushNamed(context, '/first_entry');
   }
 
-  void login(context) {
-    var result = UserRepository.instance.findInDb(email, password);
-    if (result.isNotEmpty) {
-      setUserData(result);
-      if (result["preference"] == null) {
-        firstLogin(context, result["token"]);
-        return;
-      } else {
-        approvedLogin(context, result["token"]);
-        return;
-      }
+  void login(context, tipo) {
+    print(tipo);
+    if(tipo != null){
+        var result = UserRepository.instance.findInDb(email, password, tipo.valor);
+        if (result.isNotEmpty) {
+          if (result["preference"] == null) {
+          setUserData(result);
+            firstLogin(context, result["token"]);
+            return;
+          } else {
+            approvedLogin(context, result["token"]);
+            return;
+          }
+        }
     }
   }
 }

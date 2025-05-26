@@ -4,7 +4,9 @@
 
 import 'package:barbermanager_fe/models/barber_shop.dart';
 import 'package:barbermanager_fe/utils/shared_preferences_utils.dart';
-import 'package:barbermanager_fe/views/SummaryView.dart';
+import 'package:barbermanager_fe/view_models/client_handle_service.dart';
+import 'package:barbermanager_fe/views/summary_view.dart';
+import 'package:barbermanager_fe/widgets/barbershop_date_time_card.dart';
 import 'package:barbermanager_fe/widgets/primary_button.dart';
 import 'package:flutter/material.dart';
 import 'package:barbermanager_fe/models/barber.dart';
@@ -138,6 +140,7 @@ class _DateTimeSelectionViewState extends State<DateTimeSelectionView> {
 
   @override
   Widget build(BuildContext context) {
+    final clientService = ClientHandleService();
     final currentDate = DateTime.now();
     final weekDates = List.generate(7, (index) {
       final date = currentDate.add(Duration(days: index));
@@ -217,93 +220,6 @@ class _DateTimeSelectionViewState extends State<DateTimeSelectionView> {
             const SizedBox(height: 16),
 
             // Informações do barbeiro e do serviço selecionado
-            Padding(
-              padding: const EdgeInsets.all(0),
-              child: Container(
-                padding: const EdgeInsets.all(12.0),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: const Color.fromRGBO(30, 30, 30, 0.8),
-                    width: 1.0,
-                  ),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Flexible(
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            backgroundImage: NetworkImage(
-                              widget.selectedBarber.imageUrl,
-                            ),
-                            radius: 30,
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  widget.selectedBarber.name,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  softWrap: true,
-                                  overflow: TextOverflow.visible,
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  widget.selectedBarber.description,
-                                  style: const TextStyle(
-                                    color: Colors.white70,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                  softWrap: true,
-                                  overflow: TextOverflow.visible,
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  "Serviço Selecionado: ${widget.selectedService.name}",
-                                  style: const TextStyle(
-                                    color: Colors.white70,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w200,
-                                  ),
-                                  softWrap: true,
-                                  overflow: TextOverflow.visible,
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  "Preço: R\$ ${widget.selectedService.price.toStringAsFixed(2)}",
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  softWrap: true,
-                                  overflow: TextOverflow.visible,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.close, color: Colors.white),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ),
             const SizedBox(height: 16),
 
             // Lista de horários disponíveis
@@ -342,6 +258,13 @@ class _DateTimeSelectionViewState extends State<DateTimeSelectionView> {
                     }).toList(),
               ),
             ],
+
+            ListView.builder(
+              itemCount: ClientHandleService().choices.length,
+              itemBuilder: (context, index) {
+                return BarbershopDateTimeCard(name: ClientHandleService().choices[index].barbershop.name, description: ClientHandleService().choices[index].barbershop.description, imageUrl: ClientHandleService().choices[index].barbershop.imageUrl, price: ClientHandleService().choices[index].selectedService.price);
+              },
+            ),
             const Spacer(),
 
             // Botões de ação

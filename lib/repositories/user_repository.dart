@@ -8,19 +8,21 @@ class UserRepository {
   List<Map<dynamic, dynamic>> db = [
     {
       "username": "Teste",
-      "email": "teste@gmail.com",
-      "password": "123123An",
+      "email": "teste@teste.com",
+      "password": "teste123",
       "first_entry": true,
       "token": "sjiabsodasibdias.sdibashdbasi...",
       "preference": null,
+      "type": 2
     },
   ];
 
-  Map<dynamic, dynamic> findInDb(email, password) {
+  Map<dynamic, dynamic> findInDb(email, password, type) {
     return db.firstWhere(
       (item) =>
           item["email"].toString().toLowerCase() == email.toLowerCase() &&
-          item["password"].toString() == password.toString(),
+          item["password"].toString() == password.toString() &&
+          item["type"] == type,
       orElse: () => {},
     );
   }

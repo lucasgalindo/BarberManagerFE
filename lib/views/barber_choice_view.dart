@@ -1,18 +1,19 @@
 import 'package:barbermanager_fe/models/barber.dart';
 import 'package:barbermanager_fe/models/barber_shop.dart';
 import 'package:barbermanager_fe/models/barberservice.dart';
-import 'package:barbermanager_fe/views/DateTimeSelectionView.dart';
+import 'package:barbermanager_fe/view_models/client_handle_service.dart';
+import 'package:barbermanager_fe/views/date_time_selection_view.dart';
 import 'package:flutter/material.dart';
 import 'package:barbermanager_fe/widgets/BarberChoiceCard.dart';
 
 class BarberChoiceView extends StatelessWidget {
   final Barbershop barbershop;
   final List<Barber> team;
-  final BarberService selectedService;
+  final BarberService selectedService;  
   final Map<String, String> workingHours;
   final List<Map<String, dynamic>> previousServices;
 
-  const BarberChoiceView({
+   BarberChoiceView({
     Key? key,
     required this.barbershop,
     required this.team,
@@ -63,6 +64,8 @@ class BarberChoiceView extends StatelessWidget {
                       imageUrl: barber.imageUrl,
                       description: barber.description,
                       onTap: () {
+
+                        ClientHandleService().add(barbershop, filteredBarbers, selectedService, workingHours);
                         Navigator.push(
                           context,
                           MaterialPageRoute(

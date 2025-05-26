@@ -5,6 +5,11 @@ class UserModel {
   String birthDate;
   String password;
   String confirmPassword;
+  String? cnpj;
+
+
+  
+
 
   UserModel({
     this.username = '',

@@ -1,5 +1,3 @@
-import 'package:barbermanager_fe/utils/shared_preferences_utils.dart';
-
 import 'package:barbermanager_fe/models/jwt.dart';
 import 'package:flutter/material.dart';
 

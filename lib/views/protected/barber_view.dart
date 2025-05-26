@@ -1,6 +1,6 @@
 import 'package:barbermanager_fe/utils/shared_preferences_utils.dart';
 import 'package:barbermanager_fe/view_models/BarberAutonomosViewModel.dart';
-import 'package:barbermanager_fe/views/BarberAutonomoDetailsView.dart';
+import 'package:barbermanager_fe/views/barber_autonomo_details_view.dart';
 import 'package:barbermanager_fe/widgets/BarberAutonomoCard.dart';
 import 'package:barbermanager_fe/widgets/custom_drawer.dart';
 import 'package:flutter/material.dart';

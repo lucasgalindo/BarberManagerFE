@@ -1,4 +1,4 @@
-import 'package:barbermanager_fe/views/BarberChoiceView.dart';
+import 'package:barbermanager_fe/views/barber_choice_view.dart';
 import 'package:flutter/material.dart';
 import '../models/barber_shop.dart';
 import 'package:barbermanager_fe/widgets/box_of_carousel.dart';

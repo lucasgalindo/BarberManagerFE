@@ -1,4 +1,4 @@
-import 'package:barbermanager_fe/views/BarberAutonomoServicesView.dart';
+import 'package:barbermanager_fe/views/barber_autonomo_services_view.dart';
 import 'package:flutter/material.dart';
 import 'package:barbermanager_fe/models/barberAutonomos.dart';
 import '../widgets/primary_button.dart';
@@ -9,7 +9,7 @@ class BarberAutonomoDetailsView extends StatelessWidget {
   const BarberAutonomoDetailsView({Key? key, required this.barber})
     : super(key: key);
 
-  @override
+  @override  
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(

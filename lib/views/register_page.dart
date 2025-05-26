@@ -1,3 +1,4 @@
+import 'package:barbermanager_fe/models/user_type_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../view_models/register_view_model.dart';
@@ -5,10 +6,10 @@ import '../widgets/primary_button.dart';
 import '../widgets/text_input_field.dart';
 
 class RegisterPage extends StatelessWidget {
-
   const RegisterPage({super.key});
   @override
   Widget build(BuildContext context) {
+    final userType = ModalRoute.of(context)!.settings.arguments;
     final screenSize = MediaQuery.sizeOf(context);
     return ChangeNotifierProvider(
       create: (_) => RegisterViewModel(),
@@ -66,6 +67,11 @@ class RegisterPage extends StatelessWidget {
                               obscureText: true,
                               onChanged: viewModel.updateConfirmPassword,
                             ),
+                            if(userType == UserType.donoBarbearia)
+                              TextInputField(
+                              hintText: "CNPJ",
+                              onChanged: viewModel.updateConfirmPassword,
+                            ),
                             const SizedBox(height: 16),
                             Text.rich(
                               TextSpan(
@@ -112,7 +118,9 @@ class RegisterPage extends StatelessWidget {
                             const SizedBox(height: 16),
                             Center(
                               child: TextButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
                                 child: const Text.rich(
                                   TextSpan(
                                     text: "Já tem uma conta? ",

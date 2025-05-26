@@ -1,4 +1,4 @@
-import 'package:barbermanager_fe/views/BarberAutonomoDateTimeSelectionView.dart';
+import 'package:barbermanager_fe/views/barber_autonomo_date_time_selection_view.dart';
 import 'package:flutter/material.dart';
 import 'package:barbermanager_fe/models/barberAutonomos.dart';
 import 'package:barbermanager_fe/widgets/box_of_carousel.dart';

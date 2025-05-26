@@ -1,5 +1,5 @@
 import 'package:barbermanager_fe/view_models/first_entry_view_model.dart';
-import 'package:barbermanager_fe/views/protected/barberView.dart';
+import 'package:barbermanager_fe/views/protected/barber_view.dart';
 import 'package:barbermanager_fe/widgets/primary_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

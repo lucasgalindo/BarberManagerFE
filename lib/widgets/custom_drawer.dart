@@ -1,11 +1,10 @@
 import 'package:barbermanager_fe/view_models/auth_provider.dart';
-import 'package:barbermanager_fe/views/SettingsView.dart';
-import 'package:barbermanager_fe/views/protected/barberView.dart';
+import 'package:barbermanager_fe/views/settings_view.dart';
+import 'package:barbermanager_fe/views/protected/barber_view.dart';
 import 'package:barbermanager_fe/views/protected/home_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:barbermanager_fe/utils/shared_preferences_utils.dart';
-import 'package:barbermanager_fe/views/SettingsView.dart';
 
 class CustomDrawer extends StatelessWidget {
   final String username;
@@ -99,7 +98,7 @@ class CustomDrawer extends StatelessWidget {
                       style: TextStyle(color: Colors.white),
                     ),
                     onTap: () {
-                      // Abrir o chatbot com IA
+                      Navigator.pushNamed(context, "/chat");
                     },
                   ),
                   ListTile(
