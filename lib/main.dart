@@ -10,6 +10,7 @@ import 'package:barbermanager_fe/views/protected/barber_view.dart';
 import 'package:barbermanager_fe/views/protected/first_entry_login.dart';
 import 'package:barbermanager_fe/views/protected/home_view.dart';
 import 'package:barbermanager_fe/views/register_page.dart';
+import 'package:barbermanager_fe/widgets/service_category_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
