@@ -1,10 +1,5 @@
-// FALTA ADICIONAR UMA LOGICA PARA MANTER O MESMO VISUAL, E QUE AO VOLTAR PARA ADICIONAR OUTRO SERVIÇO
-// EXIBA TAMBEM O BARBEIRO E O SERVIÇO SELECIONADO NOVAMENTE, COM A POSSIBILIDADE DE ESCOLHER OUTRO HORARIO
-// E QUE O VALOR TOTAL SEJA SOMADO AO VALOR DO SERVIÇO SELECIONADO ANTERIORMENTE
-
 import 'package:barbermanager_fe/models/barber_shop.dart';
 import 'package:barbermanager_fe/utils/shared_preferences_utils.dart';
-import 'package:barbermanager_fe/view_models/client_handle_service.dart';
 import 'package:barbermanager_fe/views/summary_view.dart';
 import 'package:barbermanager_fe/widgets/barbershop_date_time_card.dart';
 import 'package:barbermanager_fe/widgets/primary_button.dart';
@@ -20,7 +15,7 @@ class DateTimeSelectionView extends StatefulWidget {
   final Barbershop barbershop;
   final List<Map<String, dynamic>> previousServices;
 
-  const DateTimeSelectionView({ 
+  const DateTimeSelectionView({
     Key? key,
     required this.barbershop,
     required this.selectedBarber,
@@ -36,11 +31,16 @@ class DateTimeSelectionView extends StatefulWidget {
 class _DateTimeSelectionViewState extends State<DateTimeSelectionView> {
   String? selectedDate;
   String? selectedTime;
+  List<String> availableDates = [];
   List<String> availableTimes = [];
-  
+
+  late List<Map<String, dynamic>> allServices;
+
   @override
   void initState() {
     super.initState();
+    allServices = List.from(widget.previousServices);
+
     _initializeAvailableDates();
   }
 
@@ -52,15 +52,18 @@ class _DateTimeSelectionViewState extends State<DateTimeSelectionView> {
           final formattedDate = "${date.day}/${date.month}";
           final weekday = _getWeekdayFromDate(date);
           final workingHours = widget.workingHours[weekday];
-
           if (workingHours != null && workingHours != "Fechado") {
             return formattedDate;
           }
           return null;
-        }).where((date) => date != null).toList();
+        }).whereType<String>().toList();
 
     setState(() {
-      availableTimes = dates.cast<String>();
+      availableDates = dates;
+      if (availableDates.isNotEmpty) {
+        selectedDate = availableDates[0];
+        _updateAvailableTimes(selectedDate!);
+      }
     });
   }
 
@@ -81,8 +84,7 @@ class _DateTimeSelectionViewState extends State<DateTimeSelectionView> {
         final formattedTime =
             "${currentTime.hour.toString().padLeft(2, '0')}:${currentTime.minute.toString().padLeft(2, '0')}";
 
-        // Verifica se o horário já foi reservado
-        final isUnavailable = widget.previousServices.any(
+        final isUnavailable = allServices.any(
           (service) =>
               service['date'] == date && service['time'] == formattedTime,
         );
@@ -104,10 +106,14 @@ class _DateTimeSelectionViewState extends State<DateTimeSelectionView> {
 
       setState(() {
         availableTimes = times;
+        if (selectedTime != null && !availableTimes.contains(selectedTime)) {
+          selectedTime = null;
+        }
       });
     } else {
       setState(() {
         availableTimes = [];
+        selectedTime = null;
       });
     }
   }
@@ -138,9 +144,15 @@ class _DateTimeSelectionViewState extends State<DateTimeSelectionView> {
     return TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1]));
   }
 
+  double getTotalPrice() {
+    return allServices.fold<double>(
+      0.0,
+      (sum, service) => sum + (service['service'].price as double),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final clientService = ClientHandleService();
     final currentDate = DateTime.now();
     final weekDates = List.generate(7, (index) {
       final date = currentDate.add(Duration(days: index));
@@ -156,9 +168,7 @@ class _DateTimeSelectionViewState extends State<DateTimeSelectionView> {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
           "Data e Hora",
@@ -175,54 +185,76 @@ class _DateTimeSelectionViewState extends State<DateTimeSelectionView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Carrossel com as datas disponíveis
+            // Carrossel de datas
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
                 children:
                     weekDates.map((date) {
                       final isSelected = selectedDate == date['day'];
+                      final isAvailable = availableDates.contains(date['day']);
                       return Padding(
                         padding: const EdgeInsets.only(right: 12),
-                        child: BoxOfCarousel(
-                          isSelected: isSelected,
-                          onTap: () {
-                            setState(() {
-                              selectedDate = date['day'];
-                              _updateAvailableTimes(selectedDate!);
-                            });
-                          },
-                          child: Column(
-                            children: [
-                              Text(
-                                date['weekday']!,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
+                        child: Opacity(
+                          opacity: isAvailable ? 1.0 : 0.3,
+                          child: BoxOfCarousel(
+                            isSelected: isSelected,
+                            onTap:
+                                isAvailable
+                                    ? () {
+                                      setState(() {
+                                        selectedDate = date['day'];
+                                        selectedTime = null;
+                                        _updateAvailableTimes(selectedDate!);
+                                      });
+                                    }
+                                    : null,
+                            child: Column(
+                              children: [
+                                Text(
+                                  date['weekday']!,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                date['day']!,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
+                                const SizedBox(height: 4),
+                                Text(
+                                  date['day']!,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       );
                     }).toList(),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 24),
 
-            // Informações do barbeiro e do serviço selecionado
-            const SizedBox(height: 16),
+            Text(
+              "Barbeiro e Serviço Selecionados:",
+              style: const TextStyle(
+                color: Colors.white70,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
+            ),
+            const SizedBox(height: 8),
+            BarbershopDateTimeCard(
+              name: widget.selectedBarber.name,
+              description: widget.selectedService.name,
+              imageUrl: widget.selectedBarber.imageUrl,
+              price: widget.selectedService.price,
+            ),
 
-            // Lista de horários disponíveis
+            const SizedBox(height: 24),
+
             if (selectedDate != null) ...[
               const Text(
                 "Selecione um horário:",
@@ -259,96 +291,108 @@ class _DateTimeSelectionViewState extends State<DateTimeSelectionView> {
               ),
             ],
 
-            if(ClientHandleService().choices.isNotEmpty) ...[
-             ListView.builder(
-              scrollDirection: Axis.vertical,
-              itemCount: ClientHandleService().choices.length,
-              itemBuilder: (context, index) {
-                return BarbershopDateTimeCard(name: ClientHandleService().choices[index].barbershop.name, description: ClientHandleService().choices[index].barbershop.description, imageUrl: ClientHandleService().choices[index].barbershop.imageUrl, price: ClientHandleService().choices[index].selectedService.price);
-              },
-            ),
-            const Spacer(),
+            if (allServices.isNotEmpty) ...[
+              const SizedBox(height: 24),
+              const Text(
+                "Serviços Agendados:",
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+              const SizedBox(height: 12),
+              SizedBox(
+                height: 120,
+                child: ListView.builder(
+                  itemCount: allServices.length,
+                  itemBuilder: (context, index) {
+                    final service = allServices[index];
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: BarbershopDateTimeCard(
+                        name: service['barber'].name,
+                        description:
+                            "${service['service'].name} - ${service['date']} ${service['time']}",
+                        imageUrl: service['barber'].imageUrl,
+                        price: service['service'].price,
+                      ),
+                    );
+                  },
+                ),
+              ),
             ],
 
-            // Botões de ação
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      "Valor total",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      "R\$ ${widget.selectedService.price.toStringAsFixed(2)}",
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                SizedBox(
-                  width: double.infinity,
-                  child: OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      side: const BorderSide(
-                        color: Color(0xFF1717B4),
-                        width: 1.0,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14.0),
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 24.0),
-                    ),
-                    onPressed: () {
-                      if (selectedDate == null || selectedTime == null) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                              "Por favor, selecione uma data e um horário antes de continuar.",
-                            ),
-                          ),
-                        );
-                        return;
-                      }
+            const Spacer(),
 
-                      Navigator.pushNamed(
-                        context,
-                        '/services',
-                        arguments: {
-                          'barbershop': widget.barbershop,
-                          'previousServices': [
-                            ...widget.previousServices,
-                            {
-                              'service': widget.selectedService,
-                              'barber': widget.selectedBarber,
-                              'date': selectedDate,
-                              'time': selectedTime,
-                            },
-                          ],
-                        },
-                      );
-                    },
-                    child: const Text(
-                      "Agendar mais serviços",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w100,
-                      ),
-                    ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  "Valor total",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 16),
+                Text(
+                  "R\$ ${getTotalPrice().toStringAsFixed(2)}",
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: Color(0xFF1717B4)),
+                    padding: const EdgeInsets.symmetric(vertical: 24.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                  onPressed: () {
+                    if (selectedDate == null || selectedTime == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            "Por favor, selecione uma data e um horário antes de continuar.",
+                          ),
+                        ),
+                      );
+                      return;
+                    }
+
+                    allServices.add({
+                      'service': widget.selectedService,
+                      'barber': widget.selectedBarber,
+                      'date': selectedDate,
+                      'time': selectedTime,
+                    });
+
+                    Navigator.pushNamed(
+                      context,
+                      '/services',
+                      arguments: {
+                        'barbershop': widget.barbershop,
+                        'previousServices': allServices,
+                      },
+                    );
+                  },
+                  child: const Text(
+                    "Agendar mais",
+                    style: TextStyle(color: Colors.white, fontSize: 24),
+                  ),
+                ),
+                const SizedBox(height: 12),
                 PrimaryButton(
                   text: "Finalizar",
                   onPressed: () async {
@@ -363,14 +407,15 @@ class _DateTimeSelectionViewState extends State<DateTimeSelectionView> {
                       return;
                     }
 
+                    allServices.add({
+                      'service': widget.selectedService,
+                      'barber': widget.selectedBarber,
+                      'date': selectedDate,
+                      'time': selectedTime,
+                    });
+
                     final userData = await getUserData();
                     final username = userData?['username'] ?? "Usuário";
-
-                    double totalPrice = widget.previousServices.fold<double>(
-                      0.0,
-                      (sum, service) => sum + service['service'].price,
-                    );
-                    totalPrice += widget.selectedService.price;
 
                     Navigator.push(
                       context,
@@ -381,16 +426,8 @@ class _DateTimeSelectionViewState extends State<DateTimeSelectionView> {
                               barbershopName: widget.barbershop.name,
                               barbershopAddress: widget.barbershop.address,
                               barbershopPhone: widget.barbershop.phone,
-                              services: [
-                                ...widget.previousServices,
-                                {
-                                  'service': widget.selectedService,
-                                  'barber': widget.selectedBarber,
-                                  'date': selectedDate,
-                                  'time': selectedTime,
-                                },
-                              ],
-                              totalPrice: totalPrice.toStringAsFixed(2),
+                              services: allServices,
+                              totalPrice: getTotalPrice().toStringAsFixed(2),
                             ),
                       ),
                     );

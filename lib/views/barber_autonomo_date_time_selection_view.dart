@@ -36,11 +36,10 @@ class _BarberAutonomoDateTimeSelectionViewState
 
   List<Map<String, String>> getNext7Days() {
     final now = DateTime.now();
-    final days = <Map<String, String>>[];
-    for (int i = 0; i < 7; i++) {
+    return List.generate(7, (i) {
       final date = now.add(Duration(days: i));
       final weekday = weekDays[date.weekday % 7];
-      days.add({
+      return {
         'weekday': weekday,
         'day': date.day.toString().padLeft(2, '0'),
         'month': date.month.toString().padLeft(2, '0'),
@@ -48,9 +47,8 @@ class _BarberAutonomoDateTimeSelectionViewState
             '$weekday\n${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}',
         'value':
             '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
-      });
-    }
-    return days;
+      };
+    });
   }
 
   List<String> getAvailableTimes(
@@ -59,27 +57,30 @@ class _BarberAutonomoDateTimeSelectionViewState
   ) {
     if (selectedWeekday == null) return [];
     final workingHours = widget.barber.workingHours?[selectedWeekday];
+
     if (workingHours == null ||
         workingHours == "Fechado" ||
-        !workingHours.contains('-'))
+        !workingHours.contains('-')) {
       return [];
+    }
+
     final hours = workingHours.split(" - ");
     final opening = _parseTime(hours[0]);
     final closing = _parseTime(hours[1]);
 
     final times = <String>[];
     var current = TimeOfDay(hour: opening.hour, minute: opening.minute);
+
     while (current.hour < closing.hour ||
         (current.hour == closing.hour && current.minute < closing.minute)) {
       times.add(
         '${current.hour.toString().padLeft(2, '0')}:${current.minute.toString().padLeft(2, '0')}',
       );
       final nextMinute = current.minute + 30;
-      if (nextMinute >= 60) {
-        current = TimeOfDay(hour: current.hour + 1, minute: nextMinute - 60);
-      } else {
-        current = TimeOfDay(hour: current.hour, minute: nextMinute);
-      }
+      current = TimeOfDay(
+        hour: current.hour + (nextMinute >= 60 ? 1 : 0),
+        minute: nextMinute % 60,
+      );
     }
     return times;
   }
@@ -106,9 +107,7 @@ class _BarberAutonomoDateTimeSelectionViewState
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
           "Data e Hora",
@@ -120,95 +119,31 @@ class _BarberAutonomoDateTimeSelectionViewState
         ),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
+      body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
-              height: 60,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: days.map((date) {
-                  final isSelected = selectedDate == date['value'];
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 12),
-                    child: BoxOfCarousel(
-                      isSelected: isSelected,
-                      onTap: () {
-                        setState(() {
-                          selectedDate = date['value'];
-                          selectedTime = null;
-                        });
-                      },
-                      child: Column(
-                        children: [
-                          Text(
-                            date['weekday']!,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            '${date['day']}/${date['month']}',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                }).toList(),
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            // Informações do barbeiro autonomo e do serviço selecionado
-            Padding(
-              padding: const EdgeInsets.all(0),
-              child: Container(
-                padding: const EdgeInsets.all(12.0),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: const Color.fromRGBO(30, 30, 30, 0.8),
-                    width: 1.0,
-                  ),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Flexible(
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            backgroundImage:
-                                widget.barber.imageUrl != null &&
-                                        widget.barber.imageUrl!.isNotEmpty
-                                    ? NetworkImage(widget.barber.imageUrl!)
-                                    : null,
-                            radius: 30,
-                            child:
-                                (widget.barber.imageUrl == null ||
-                                        widget.barber.imageUrl!.isEmpty)
-                                    ? const Icon(
-                                      Icons.person,
-                                      color: Colors.white,
-                                      size: 30,
-                                    )
-                                    : null,
-                          ),
-                          const SizedBox(width: 12),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+            // Datas
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children:
+                    days.map((date) {
+                      final isSelected = selectedDate == date['value'];
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 12),
+                        child: BoxOfCarousel(
+                          isSelected: isSelected,
+                          onTap: () {
+                            setState(() {
+                              selectedDate = date['value'];
+                              selectedTime = null;
+                            });
+                          },
+                          child: Column(
                             children: [
                               Text(
-                                widget.barber.name,
+                                date['weekday']!,
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 14,
@@ -217,53 +152,103 @@ class _BarberAutonomoDateTimeSelectionViewState
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                widget.barber.description ?? "",
-                                style: const TextStyle(
-                                  color: Colors.white70,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                "Serviço Selecionado: ${widget.selectedService.name}",
-                                style: const TextStyle(
-                                  color: Colors.white70,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w200,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                "Preço: R\$ ${widget.selectedService.price.toStringAsFixed(2)}",
+                                '${date['day']}/${date['month']}',
                                 style: const TextStyle(
                                   color: Colors.white,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12,
                                 ),
                               ),
                             ],
                           ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                        ),
+                      );
+                    }).toList(),
               ),
             ),
+
             const SizedBox(height: 16),
 
-            // Lista de horários disponíveis
+            // Info do Barbeiro
+            Container(
+              padding: const EdgeInsets.all(12.0),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: const Color.fromRGBO(30, 30, 30, 0.8),
+                  width: 1.0,
+                ),
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    backgroundImage:
+                        widget.barber.imageUrl?.isNotEmpty == true
+                            ? NetworkImage(widget.barber.imageUrl!)
+                            : null,
+                    radius: 30,
+                    child:
+                        (widget.barber.imageUrl?.isEmpty ?? true)
+                            ? const Icon(
+                              Icons.person,
+                              color: Colors.white,
+                              size: 30,
+                            )
+                            : null,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.barber.name,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          widget.barber.description ?? "",
+                          style: const TextStyle(
+                            color: Colors.white70,
+                            fontSize: 14,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          "Serviço Selecionado: ${widget.selectedService.name}",
+                          style: const TextStyle(
+                            color: Colors.white70,
+                            fontSize: 14,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          "Preço: R\$ ${widget.selectedService.price.toStringAsFixed(2)}",
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            // Horários disponíveis
             if (selectedDate != null && times.isNotEmpty) ...[
               const Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "Selecione um horário:",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w300,
-                  ),
+                  style: TextStyle(color: Colors.white, fontSize: 14),
                 ),
               ),
               const SizedBox(height: 8),
@@ -298,9 +283,10 @@ class _BarberAutonomoDateTimeSelectionViewState
                 style: TextStyle(color: Colors.white70, fontSize: 14),
               ),
             ],
-            const SizedBox(height: 24),
 
-            // Botão de ação
+            const Spacer(),
+
+            // Botão Finalizar
             PrimaryButton(
               text: "Finalizar",
               onPressed: () {
@@ -314,6 +300,8 @@ class _BarberAutonomoDateTimeSelectionViewState
                   );
                   return;
                 }
+
+                // TODO: Coloque aqui a lógica para avançar ou confirmar o agendamento.
               },
             ),
           ],
