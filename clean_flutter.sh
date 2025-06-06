@@ -11,8 +11,6 @@ flutter clean
 # 🧼 Limpar temporários do usuário (equivalente a %TEMP%)
 echo "➡️  Limpando arquivos temporários do usuário..."
 rm -rf /c/Users/$USERNAME/AppData/Local/Temp/*
-
-# 🗑️ Limpar temporários do sistema (Cuidado: precisa de permissão!)
 echo "➡️  Limpando arquivos temporários do Windows..."
 rm -rf /c/Windows/Temp/*
 

@@ -120,50 +120,50 @@ class _BarberAutonomoDateTimeSelectionViewState
         ),
         centerTitle: true,
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Carrossel de datas
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children:
-                    days.map((date) {
-                      final isSelected = selectedDate == date['value'];
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 12),
-                        child: BoxOfCarousel(
-                          isSelected: isSelected,
-                          onTap: () {
-                            setState(() {
-                              selectedDate = date['value'];
-                              selectedTime = null;
-                            });
-                          },
-                          child: Column(
-                            children: [
-                              Text(
-                                date['weekday']!,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                '${date['day']}/${date['month']}',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ],
+            SizedBox(
+              height: 60,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: days.map((date) {
+                  final isSelected = selectedDate == date['value'];
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 12),
+                    child: BoxOfCarousel(
+                      isSelected: isSelected,
+                      onTap: () {
+                        setState(() {
+                          selectedDate = date['value'];
+                          selectedTime = null;
+                        });
+                      },
+                      child: Column(
+                        children: [
+                          Text(
+                            date['weekday']!,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                      );
-                    }).toList(),
+                          const SizedBox(height: 4),
+                          Text(
+                            '${date['day']}/${date['month']}',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }).toList(),
               ),
             ),
             const SizedBox(height: 16),
@@ -298,7 +298,7 @@ class _BarberAutonomoDateTimeSelectionViewState
                 style: TextStyle(color: Colors.white70, fontSize: 14),
               ),
             ],
-            const Spacer(),
+            const SizedBox(height: 24),
 
             // Botão de ação
             PrimaryButton(

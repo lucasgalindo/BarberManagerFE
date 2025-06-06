@@ -3,9 +3,9 @@ import 'package:barbermanager_fe/utils/shared_preferences_utils.dart';
 
 class ChatViewModel {
   Future<void> init() async {
-    final userData = await getUserData();
-    if (userData != null && userData['username'] != null) {
-      Message helloMessage = Message('Olá, ' + userData["username"] + '. Como Posso Ajudar?', false);
+    var userData = await getUserData();
+    if (userData != null && userData['completeName'] != null) {
+      Message helloMessage = Message('Olá, ${userData["completeName"]}. Como Posso Ajudar?', false);
       addMessage(helloMessage);
     }
   }

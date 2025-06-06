@@ -93,7 +93,6 @@ def analyze_face_shape(image_path):
 
 # Exemplo de uso
 face_shape = analyze_face_shape("user_photo.jpg")
-print(f"Formato do rosto: {face_shape}")
 
 
 

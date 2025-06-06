@@ -1,3 +1,4 @@
+import 'package:barbermanager_fe/models/customer.dart';
 import 'package:barbermanager_fe/repositories/user_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:barbermanager_fe/widgets/InfoBox.dart';
@@ -20,28 +21,12 @@ class _SettingsViewState extends State<SettingsView> {
   @override
   Widget build(BuildContext context) {
     final user = UserRepository.instance.db.firstWhere(
-      (item) => item["token"] == widget.token,
-      orElse: () => {},
+      (item) => item is Customer && item.token == widget.token,
+      orElse: () => null,
     );
 
-    if (user.isEmpty) {
-      return Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: const Text('Configurações'),
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-        ),
-        body: const Center(
-          child: Text(
-            'Usuário não encontrado.',
-            style: TextStyle(color: Colors.white),
-          ),
-        ),
-        backgroundColor: const Color.fromARGB(255, 18, 18, 18),
-      );
-    }
 
+    if(user is Customer){
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -68,7 +53,7 @@ class _SettingsViewState extends State<SettingsView> {
               title: "Nome do Usuário",
               children: [
                 Text(
-                  user["username"] ?? "",
+                  user.completeName ?? "",
                   style: const TextStyle(color: Colors.white, fontSize: 16),
                   textAlign: TextAlign.left,
                 ),
@@ -79,7 +64,7 @@ class _SettingsViewState extends State<SettingsView> {
               title: "E-mail",
               children: [
                 Text(
-                  user["email"] ?? "",
+                  user?.email ?? "",
                   style: const TextStyle(color: Colors.white, fontSize: 16),
                   textAlign: TextAlign.left,
                 ),
@@ -148,5 +133,24 @@ class _SettingsViewState extends State<SettingsView> {
         ),
       ),
     );
+  
+    }
+    else {
+      return Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: const Text('Configurações'),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+        ),
+        body: const Center(
+          child: Text(
+            'Usuário não encontrado.',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+        backgroundColor: const Color.fromARGB(255, 18, 18, 18),
+      );
+    }
   }
 }

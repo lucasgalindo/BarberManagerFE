@@ -5,11 +5,21 @@ class BarberService {
   final String category;
   final String description;
 
-  BarberService({
-    required this.name,
-    required this.price,
-    required this.duration,
-    required this.category,
-    required this.description,
-  });
+  BarberService(
+    this.name,
+    this.price,
+    this.duration,
+    this.category,
+    this.description,
+  );
+
+  factory BarberService.fromMap(Map<dynamic, dynamic> map) {
+    return BarberService(
+      map['name'],
+      map['price'],
+      map['duration'],
+      map['category'],
+      map['description'],
+    );
+  }
 }

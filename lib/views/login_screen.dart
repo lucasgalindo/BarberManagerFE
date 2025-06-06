@@ -1,16 +1,35 @@
+import 'package:barbermanager_fe/models/user_creddentials.dart';
+import 'package:barbermanager_fe/models/user_type_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../view_models/login_view_model.dart';
 import '../widgets/primary_button.dart';
 import '../widgets/text_input_field.dart';
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen([Key? key]) : super(key: key);
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  var userType;
+  Future<void> buscar() async {
+    userType = await getTypeUser();
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    buscar();
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.sizeOf(context);
-    var userType = ModalRoute.of(context)!.settings.arguments;
-    print(userType);
+
     return ChangeNotifierProvider(
       create: (_) => LoginViewModel(),
       child: Consumer<LoginViewModel>(
@@ -79,10 +98,12 @@ class LoginScreen extends StatelessWidget {
                                       PrimaryButton(
                                         text: "Entrar",
                                         onPressed:
-                                            () => viewModel.login(
-                                              context,
-                                              userType,
-                                            ),
+                                            () => {
+                                              viewModel.login(
+                                                context,
+                                                UserType.fromInt(userType),
+                                              ),
+                                            },
                                         borderRadius: 24,
                                       ),
                                       const SizedBox(height: 24),
@@ -126,7 +147,9 @@ class LoginScreen extends StatelessWidget {
                       ),
                     ),
                     Positioned(
-                      top: MediaQuery.of(context).padding.top + 16, // respeita o status bar
+                      top:
+                          MediaQuery.of(context).padding.top +
+                          16, // respeita o status bar
                       left: 16,
                       child: Align(
                         alignment: Alignment.topLeft,

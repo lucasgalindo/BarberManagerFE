@@ -40,6 +40,7 @@ class FirstEntryLogin extends StatelessWidget {
                       PrimaryButton(
                         text: "Buscar por barbeiros",
                         onPressed: () {
+                          
                           Navigator.push(
                             context,
                             MaterialPageRoute(

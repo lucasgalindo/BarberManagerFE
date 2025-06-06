@@ -112,7 +112,7 @@ class RegisterPage extends StatelessWidget {
                             const SizedBox(height: 8),
                             PrimaryButton(
                               text: "Cadastrar-se",
-                              onPressed: viewModel.submit,
+                              onPressed: ()=> viewModel.submit(context),
                               borderRadius: 24,
                             ),
                             const SizedBox(height: 16),

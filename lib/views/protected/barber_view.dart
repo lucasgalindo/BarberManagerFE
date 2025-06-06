@@ -26,15 +26,15 @@ class _BarberViewState extends State<BarberView> {
 
   @override
   void initState() {
-    super.initState();
     _loadUserName();
+    super.initState();
   }
 
   Future<void> _loadUserName() async {
     final userData = await getUserData();
-    if (userData != null && userData['username'] != null) {
+    if (userData != null && userData['completeName'] != null) {
       setState(() {
-        username = userData['username'];
+        username = userData['completeName'];
       });
     }
   }

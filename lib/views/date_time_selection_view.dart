@@ -20,7 +20,7 @@ class DateTimeSelectionView extends StatefulWidget {
   final Barbershop barbershop;
   final List<Map<String, dynamic>> previousServices;
 
-  const DateTimeSelectionView({
+  const DateTimeSelectionView({ 
     Key? key,
     required this.barbershop,
     required this.selectedBarber,
@@ -37,7 +37,7 @@ class _DateTimeSelectionViewState extends State<DateTimeSelectionView> {
   String? selectedDate;
   String? selectedTime;
   List<String> availableTimes = [];
-
+  
   @override
   void initState() {
     super.initState();
@@ -259,13 +259,16 @@ class _DateTimeSelectionViewState extends State<DateTimeSelectionView> {
               ),
             ],
 
-            ListView.builder(
+            if(ClientHandleService().choices.isNotEmpty) ...[
+             ListView.builder(
+              scrollDirection: Axis.vertical,
               itemCount: ClientHandleService().choices.length,
               itemBuilder: (context, index) {
                 return BarbershopDateTimeCard(name: ClientHandleService().choices[index].barbershop.name, description: ClientHandleService().choices[index].barbershop.description, imageUrl: ClientHandleService().choices[index].barbershop.imageUrl, price: ClientHandleService().choices[index].selectedService.price);
               },
             ),
             const Spacer(),
+            ],
 
             // Botões de ação
             Column(
