@@ -2,30 +2,30 @@ import 'package:flutter/material.dart';
 
 class BoxOfCarousel extends StatelessWidget {
   final bool isSelected;
-  final Widget child;
   final VoidCallback? onTap;
+  final Widget child;
 
   const BoxOfCarousel({
-    super.key,
+    Key? key,
     required this.isSelected,
     required this.child,
     this.onTap,
-  });
-
-  static const Color _defaultColor = Color.fromRGBO(30, 30, 30, 0.9);
-  static const Color _selectedColor = Color.fromRGBO(23, 23, 180, 1);
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.all(12),
+      child: Container(
         decoration: BoxDecoration(
-          color: isSelected ? _selectedColor : _defaultColor,
-          borderRadius: BorderRadius.circular(8),
+          color: isSelected ? Colors.blue : Colors.grey[800], // Cor diferente se selecionado
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isSelected ? Colors.blueAccent : Colors.transparent,
+            width: 2,
+          ),
         ),
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         child: child,
       ),
     );

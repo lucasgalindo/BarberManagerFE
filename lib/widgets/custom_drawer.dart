@@ -94,11 +94,24 @@ class CustomDrawer extends StatelessWidget {
                       color: Colors.white,
                     ),
                     title: const Text(
-                      'ChatBot',
+                      'Qual melhor corte para mim?',
                       style: TextStyle(color: Colors.white),
                     ),
                     onTap: () {
-                      Navigator.pushNamed(context, "/chat");
+                      Navigator.pushNamed(context, "/recommend");
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(
+                      Icons.calendar_today,
+                      color: Colors.white,
+                    ),
+                    title: const Text(
+                      'Meus Agendamentos',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    onTap: () {
+                      Navigator.pushNamed(context, "/agendamentos");
                     },
                   ),
                   ListTile(

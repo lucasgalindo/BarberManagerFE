@@ -21,7 +21,6 @@ class _TypingIndicatorState extends State<TypingIndicator>
       CurvedAnimation(parent: _controller, curve: Curves.linear),
     );
   }
-
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(

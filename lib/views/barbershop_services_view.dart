@@ -1,3 +1,4 @@
+import 'package:barbermanager_fe/view_models/agendamento_service.dart';
 import 'package:barbermanager_fe/views/barber_choice_view.dart';
 import 'package:flutter/material.dart';
 import '../models/barber_shop.dart';
@@ -5,13 +6,9 @@ import 'package:barbermanager_fe/widgets/box_of_carousel.dart';
 import 'package:barbermanager_fe/widgets/BarberServiceCard.dart';
 
 class BarbershopServicesView extends StatefulWidget {
-  final Barbershop barbershop;
-  final List<Map<String, dynamic>> previousServices;
 
   const BarbershopServicesView({
-    Key? key,
-    required this.barbershop,
-    required this.previousServices,
+    Key? key
   }) : super(key: key);
 
   @override
@@ -20,20 +17,17 @@ class BarbershopServicesView extends StatefulWidget {
 
 class _BarbershopServicesViewState extends State<BarbershopServicesView> {
   String? selectedCategory;
-
+  late Barbershop barbershop;
   @override
   void initState() {
     super.initState();
-    selectedCategory =
-        widget.barbershop.categories.isNotEmpty
-            ? widget.barbershop.categories.first
-            : null;
+    barbershop = AgendamentoService().barbershop!;
   }
 
   @override
   Widget build(BuildContext context) {
     final filteredServices =
-        widget.barbershop.services.where((service) {
+        barbershop.services.where((service) {
           return selectedCategory == null ||
               service.category == selectedCategory;
         }).toList();
@@ -49,7 +43,7 @@ class _BarbershopServicesViewState extends State<BarbershopServicesView> {
           },
         ),
         title: Text(
-          widget.barbershop.name,
+          barbershop.name,
           style: const TextStyle(
             color: Colors.white,
             fontSize: 18,
@@ -68,7 +62,7 @@ class _BarbershopServicesViewState extends State<BarbershopServicesView> {
               scrollDirection: Axis.horizontal,
               child: Row(
                 children:
-                    widget.barbershop.categories.map((category) {
+                    barbershop.categories.map((category) {
                       return Padding(
                         padding: const EdgeInsets.only(right: 12),
                         child: BoxOfCarousel(
@@ -105,19 +99,12 @@ class _BarbershopServicesViewState extends State<BarbershopServicesView> {
                           final service = filteredServices[index];
                           return GestureDetector(
                             onTap: () {
+                              AgendamentoService().currentService = service;
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder:
-                                      (context) => BarberChoiceView(
-                                        barbershop: widget.barbershop,
-                                        team: widget.barbershop.team,
-                                        selectedService: service,
-                                        workingHours:
-                                            widget.barbershop.workingHours,
-                                        previousServices:
-                                            widget.previousServices,
-                                      ),
+                                      (context) => BarberChoiceView(),
                                 ),
                               );
                             },

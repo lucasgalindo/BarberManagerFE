@@ -1,348 +1,155 @@
-import 'package:http/http.dart' as http;
+import 'dart:async';
 import 'dart:convert';
-import 'package:barbermanager_fe/models/chat_step.dart';
+
+import 'package:http/http.dart' as http;
+import 'package:barbermanager_fe/models/message.dart';
+import 'package:barbermanager_fe/widgets/message_balloon.dart';
 import 'package:flutter/material.dart';
 
 class ChatView extends StatefulWidget {
+  const ChatView({super.key});
+
   @override
-  _ChatViewState createState() => _ChatViewState();
+  State<ChatView> createState() => _ChatViewState();
 }
 
 class _ChatViewState extends State<ChatView> {
-  bool isTyping = false;
-  List<ChatStep> steps = [];
-  int currentStepIndex = 0;
-  List<Map<String, String>> chatHistory = [];
+  final TextEditingController _textController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+  String currentText = "";
+  final List<Message> chatHistory = [];
+  bool isEnd = false;
 
-  @override
-  void initState() {
-    super.initState();
-
-    // cores_pele = ['clara', 'negra',]
-    // formato = ['redondo', 'quadrado', "losango", "oval"]
-    // tipos_cabelo = ['liso', 'ondulado', 'crespo', 'cacheado']
-    // preferencias = ['social', 'profissional', 'ousado']
-    // outputs_random = ['undercut', 'low fade', 'sidecut', 'degradê', 'slick back','buzzcut']
-    steps = [
-      ChatStep(
-        question:
-            'Olá! Estou aqui para ajudar você. Sou uma especialista em visagismo e posso te ajudar a escolher o melhor corte. Mas antes me diga qual o seu objetivo?',
-        options: [
-          ChatOption(
-            answerText: 'Quero um corte para parecer mais profissional.',
-            nextStepIndex: 1,
-            label: 'profissional',
-          ),
-          ChatOption(
-            answerText: 'Quero um corte mais ousado.',
-            nextStepIndex: 1,
-            label: 'ousado',
-          ),
-          ChatOption(
-            answerText: 'Quero um corte mais social.',
-            nextStepIndex: 1,
-            label: 'social',
-          ),
-        ],
-      ),
-      ChatStep(
-        question: 'Ótimo! Agora me diga qual é o seu tipo de cabelo?',
-        options: [
-          ChatOption(answerText: 'Liso', nextStepIndex: 2, label: 'liso'),
-          ChatOption(
-            answerText: 'Cacheado',
-            nextStepIndex: 2,
-            label: 'cacheado',
-          ),
-          ChatOption(answerText: 'Crespo', nextStepIndex: 2, label: 'crespo'),
-          ChatOption(
-            answerText: 'Ondulado',
-            nextStepIndex: 2,
-            label: 'ondulado',
-          ),
-        ],
-      ),
-      ChatStep(
-        question: 'Perfeito, agora qual o formato do seu rosto?',
-        options: [
-          ChatOption(
-            answerText: 'Meu rosto é Quadrado',
-            nextStepIndex: 3,
-            label: 'quadrado',
-          ),
-          ChatOption(
-            answerText: 'Meu rosto é Redondo',
-            nextStepIndex: 3,
-            label: 'redondo',
-          ),
-          ChatOption(
-            answerText: 'Meu rosto é Losango',
-            nextStepIndex: 3,
-            label: 'losango',
-          ),
-          ChatOption(
-            answerText: 'Meu rosto é Oval',
-            nextStepIndex: 3,
-            label: 'oval',
-          ),
-        ],
-      ),
-      ChatStep(
-        question: 'Perfeito! Agora para finalizar qual a tom da sua pele?',
-        options: [
-          ChatOption(
-            answerText: 'Minha pele é mais Clara.',
-            nextStepIndex: null,
-            label: 'clara',
-          ),
-          ChatOption(
-            answerText: 'Minha pele é mais Escura.',
-            nextStepIndex: null,
-            label: 'negra',
-          ),
-        ],
-      ),
-    ];
-
-    // Adiciona a primeira pergunta como mensagem do bot
-    chatHistory.add({'question': steps[0].question, 'answer': ''});
-
-    // Rola para o final depois que a frame for renderizada
-    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToEnd());
-  }
-
-  void _onOptionSelected(ChatOption option) async {
-    setState(() {
-      chatHistory.last['answer'] = option.answerText;
-      chatHistory.last['label'] = option.label;
-    });
-
-    _scrollToEnd();
-
-    if (option.nextStepIndex != null) {
-      setState(() => isTyping = true);
-
-      await Future.delayed(Duration(seconds: 1)); // animação "escrevendo..."
-      setState(() {
-        isTyping = false;
-        currentStepIndex = option.nextStepIndex!;
-        chatHistory.add({
-          'question': steps[currentStepIndex].question,
-          'answer': '',
-        });
-      });
-      _scrollToEnd();
-    } else {
-      // Bate na API para sugerir próxima resposta
-      setState(() => isTyping = true);
-
-      final suggestion = await _fetchSuggestion(option.answerText);
-
-      setState(() => isTyping = false);
-
-      if (suggestion != null) {
-        await Future.delayed(Duration(milliseconds: 800));
-        setState(() {
-          chatHistory.add({
-            'question':
-                "Com base nas suas respostas, eu sugiro o corte: $suggestion",
-            'answer': '',
-          });
-        });
-      }
-
-      setState(() {
-        currentStepIndex = -1; // marca fim da conversa
-      });
-    }
-  }
-
-  Future<String?> _fetchSuggestion(String userInput) async {
+  Future<void> enviarMensagem(String text) async {
     try {
-      final request = {
-        "formato_do_rosto": "${chatHistory[0]['label']}",
-        "tipo_de_cabelo": "${chatHistory[1]['label']}",
-        "preferencia": "${chatHistory[2]['label']}",
-        "cor_da_Pele": "${chatHistory[3]['label']}",
-      };
-      print(request);
-      final response = await http.post(
-        Uri.parse('https://1228-34-16-156-80.ngrok-free.app/prever_corte'),
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode(request),
-      );
-
+      print("Enviando mensagem: $text");
+      final response = await http
+          .post(
+            Uri.parse("https://f5d3-34-16-198-20.ngrok-free.app/chat"),
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+            body: json.encode({
+              "message": text,
+            }),
+          )
+          .timeout(const Duration(seconds: 100));
+      final message = json.decode(response.body)["response"];
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        return data['corte_escolhido']; // ajusta conforme estrutura da tua API
+        setState(() {
+          chatHistory.add(Message(message, false));
+        });
+        print('Mensagem enviada com sucesso');
       } else {
-        print('Erro na API: ${response.statusCode} - ${response.body}');
-        return 'Desculpe, não entendi. Pode repetir?';
+        print('Erro do servidor: ${response.statusCode}');
+        print(response.body);
       }
+    } on TimeoutException catch (_) {
+      print('Erro: tempo de requisição excedido');
     } catch (e) {
-      print('Erro na requisição: $e');
-      return 'Ocorreu um erro. Tente novamente mais tarde.';
-    }
-  }
-
-  void _scrollToEnd() {
-    if (_scrollController.hasClients) {
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent + 100,
-        duration: Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
+      print('Erro geral: $e');
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final isEnd = currentStepIndex == -1;
-
     return Scaffold(
-      appBar: AppBar(title: Text('Chatbot')),
+      appBar: AppBar(),
       body: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: SizedBox(
+              child: Column(
+                children: [
+                  Icon(Icons.smart_toy_outlined, size: 40),
+                  Padding(padding: const EdgeInsets.only(left: 8.0)),
+                  Text(
+                    "Assistente Virtual do Cliente",
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.normal,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
           Expanded(
             child: ListView.builder(
               controller: _scrollController,
               padding: EdgeInsets.symmetric(vertical: 16),
               itemCount: chatHistory.length + (isEnd ? 1 : 0),
               itemBuilder: (context, index) {
-                if (index < chatHistory.length) {
-                  final entry = chatHistory[index];
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      if (entry['question']!.isNotEmpty)
-                        _buildAnimatedMessage(
-                          isUser: false,
-                          text: entry['question']!,
-                        ),
-                      if (entry['answer']!.isNotEmpty)
-                        _buildAnimatedMessage(
-                          isUser: true,
-                          text: entry['answer']!,
-                        ),
-                    ],
-                  );
-                } else {
-                  return Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Center(child: Text('Fim da conversa.')),
-                  );
-                }
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [MessageBalloon(msg: chatHistory[index])],
+                );
               },
             ),
           ),
-          if (!isEnd)
-            Container(
-              height: 200,
-              alignment: Alignment.center,
-              padding: EdgeInsets.all(16),
-              color: const Color.fromARGB(255, 44, 44, 44),
-              child: Wrap(
-                alignment: WrapAlignment.center,
-
-                spacing: 12, // espaço horizontal entre botões
-                runSpacing: 12, // espaço vertical entre linhas
-                children:
-                    steps[currentStepIndex].options.map((opt) {
-                      int totalOptions = steps[currentStepIndex].options.length;
-                      int buttonsPerRow;
-
-                      if (totalOptions <= 2) {
-                        buttonsPerRow = 2;
-                      } else if (totalOptions <= 4) {
-                        buttonsPerRow = 2;
-                      } else {
-                        buttonsPerRow = 3;
-                      }
-
-                      double screenWidth = MediaQuery.of(context).size.width;
-                      double totalSpacing =
-                          (buttonsPerRow - 1) * 12 +
-                          32; // 32 = padding horizontal container
-                      double buttonWidth =
-                          (screenWidth - totalSpacing) / buttonsPerRow;
-
-                      return SizedBox(
-                        width: buttonWidth,
-                        height: 70,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blue,
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 12,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                          onPressed: () => _onOptionSelected(opt),
-                          child: Text(
-                            opt.answerText,
-                            style: TextStyle(color: Colors.white),
-                          ),
+          SizedBox(
+            height: 80,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _textController,
+                      // quero que quando o usuario precionar enter, o texto seja enviado e o campo de texto seja limpo
+                      decoration: InputDecoration(
+                        hintText: "Digite sua mensagem",
+                        filled: true,
+                        contentPadding: EdgeInsets.symmetric(
+                          vertical: 16,
+                          horizontal: 20,
                         ),
-                      );
-                    }).toList(),
-              ),
-            ),
-            
-        ],
-      ),
-    );
-  }
 
-  Widget _buildAnimatedMessage({required bool isUser, required String text}) {
-    double maxBubbleWidth =
-        MediaQuery.of(context).size.width * 0.7; // 70% da largura da tela
-
-    return TweenAnimationBuilder(
-      tween: Tween<double>(begin: 0, end: 1),
-      duration: Duration(milliseconds: 300),
-      builder: (context, double opacity, child) {
-        return Opacity(
-          opacity: opacity,
-          child: Transform.translate(
-            offset: Offset(
-              isUser ? 30 * (1 - opacity) : -30 * (1 - opacity),
-              0,
-            ),
-            child: Align(
-              alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
-              child: Container(
-                margin: EdgeInsets.symmetric(vertical: 4, horizontal: 12),
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: maxBubbleWidth),
-                  child: Container(
-                    padding: EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: isUser ? Colors.blue : Colors.grey[300],
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      text,
-                      style: TextStyle(
-                        color: isUser ? Colors.white : Colors.black87,
+                        fillColor: Colors.black,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: BorderSide.none,
+                        ),
                       ),
+                      maxLines: 5,
+                      minLines: 1,
+                      onChanged:
+                          (value) => setState(() {
+                            currentText = value;
+                          }),
                     ),
                   ),
-                ),
+                  IconButton(
+                    icon: Icon(Icons.send, color: Colors.white),
+                    onPressed: () {
+                      setState(() {
+                        currentText = _textController.text.trim();
+                        if (currentText.isNotEmpty) {
+                          chatHistory.add(Message(currentText, true));
+                          enviarMensagem(currentText);
+                          currentText = "";
+                          _textController.clear();
+                          _scrollController.animateTo(
+                            _scrollController.position.maxScrollExtent,
+                            duration: Duration(milliseconds: 300),
+                            curve: Curves.easeOut,
+                          );
+                        }
+                      });
+                    },
+                  ),
+                ],
               ),
             ),
           ),
-        );
-      },
+        ],
+      ),
     );
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
   }
 }
