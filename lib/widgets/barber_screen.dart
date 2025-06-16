@@ -3,12 +3,13 @@ import 'package:barbermanager_fe/models/barberservice.dart';
 import 'package:barbermanager_fe/utils/shared_preferences_utils.dart';
 import 'package:barbermanager_fe/widgets/barber_drawer.dart';
 import 'package:barbermanager_fe/widgets/box_of_carousel.dart';
+import 'package:barbermanager_fe/widgets/dashboard_screen.dart';
 import 'package:barbermanager_fe/widgets/service_category_manager.dart';
 import 'package:flutter/material.dart';
 
 class BarberScreen extends StatefulWidget {
   final String username;
-  const   BarberScreen({super.key, required this.username});
+  const BarberScreen({super.key, required this.username});
 
   @override
   State<BarberScreen> createState() => _BarberScreenState();
@@ -42,6 +43,7 @@ class _BarberScreenState extends State<BarberScreen> {
       return selectedCategory == null || service.category == selectedCategory;
     }).toList();
   }
+
   @override
   void initState() {
     super.initState();
@@ -61,10 +63,9 @@ class _BarberScreenState extends State<BarberScreen> {
   @override
   Widget build(BuildContext context) {
     if (!mounted || barberAutonomo == null) {
-    return const Center(child: CircularProgressIndicator());
-  }
+      return const Center(child: CircularProgressIndicator());
+    }
 
-  return ServiceCategoryManager();
+    return DashboardCalendar(isBarbershopOwner: true);
   }
-
 }
