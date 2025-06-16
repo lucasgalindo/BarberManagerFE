@@ -26,14 +26,12 @@ class BarberAutonomosViewModel {
           BarberService(
             "Corte Masculino",
             40.0,
-            "30min",
             "Corte",
             "Corte de cabelo masculino moderno.",
           ),
           BarberService(
             "Barba",
             25.0,
-            "20min",
             "Barba",
             "Barba feita com navalha.",
           ),
@@ -62,14 +60,12 @@ class BarberAutonomosViewModel {
           BarberService(
             "Corte Social",
             35.0,
-            "30min",
             "Corte",
             "Corte social clássico.",
           ),
           BarberService(
             "Sobrancelha",
             15.0,
-            "10min",
             "Sobrancelha",
             "Design de sobrancelha.",
           ),
@@ -99,14 +95,12 @@ class BarberAutonomosViewModel {
           BarberService(
             "Corte Premium",
             60.0,
-            "45min",
             "Corte",
             "Corte premium com finalização.",
           ),
           BarberService(
             "Barba Completa",
             35.0,
-            "25min",
             "Barba",
             "Barba completa com toalha quente.",
           ),

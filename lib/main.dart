@@ -44,7 +44,6 @@ class MyApp extends StatelessWidget {
         "/first_entry":
             (context) => EmbeddedProtectedScreen(child: FirstEntryLogin()),
         "/home": (context) => EmbeddedProtectedScreen(child: HomeView()),
-        "/barber": (context) => EmbeddedProtectedScreen(child: BarberView()),
         "/recommend": (context) => EmbeddedProtectedScreen(child: RecommendView()),
         "/chat": (context) => EmbeddedProtectedScreen(child: ChatView()),
         "/barbershop_services": (context) => EmbeddedProtectedScreen(child: BarbershopServicesView()),

@@ -19,45 +19,62 @@ class _ScheduledServicesViewState extends State<ScheduledServicesView> {
       appBar: AppBar(
         title: const Text('Meus Agendamentos'),
         centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              '/home',
+              (route) => false,
+            );
+          },
+        ),
       ),
-      body: agendamentos.isEmpty
-          ? const Center(
-              child: Text(
-                'Nenhum serviço agendado.',
-                style: TextStyle(fontSize: 16),
-              ),
-            )
-          : ListView.builder(
-              itemCount: agendamentos.length,
-              itemBuilder: (context, index) {
-                final servico = agendamentos[index];
-                return Card(
-                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: ListTile(
-                    leading: const Icon(Icons.event_note),
-                    title: Text(servico.name),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Profissional: ${servico.barber.name}'),
-                        if (servico.dateTime != null)
-                          Text(
-                            'Data: ${servico.dateTime!.day}/${servico.dateTime!.month}/${servico.dateTime!.year} às ${servico.dateTime!.hour.toString().padLeft(2, '0')}:${servico.dateTime!.minute.toString().padLeft(2, '0')}',
-                          ),
-                      ],
+      body:
+          agendamentos.isEmpty
+              ? const Center(
+                child: Text(
+                  'Nenhum serviço agendado.',
+                  style: TextStyle(fontSize: 16),
+                ),
+              )
+              : ListView.builder(
+                itemCount: agendamentos.length,
+                itemBuilder: (context, index) {
+                  final servico = agendamentos[index];
+                  return Card(
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
                     ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => ScheduledServiceDetailView(servico: servico),
-                        ),
-                      );
-                    },
-                  ),
-                );
-              },
-            ),
+                    child: ListTile(
+                      leading: const Icon(Icons.event_note),
+                      title: Text(servico.name),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Profissional: ${servico.barber.name}'),
+                          if (servico.dateTime != null)
+                            Text(
+                              'Data: ${servico.dateTime!.day}/${servico.dateTime!.month}/${servico.dateTime!.year} às ${servico.dateTime!.hour.toString().padLeft(2, '0')}:${servico.dateTime!.minute.toString().padLeft(2, '0')}',
+                            ),
+                        ],
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (_) => ScheduledServiceDetailView(
+                                  servico: servico,
+                                ),
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                },
+              ),
     );
   }
 }

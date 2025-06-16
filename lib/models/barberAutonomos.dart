@@ -1,8 +1,8 @@
-import 'package:barbermanager_fe/models/abstractions/IUser.dart';
 
 import 'barberservice.dart';
 
-class Barberautonomos implements IUser{
+class Barberautonomos{
+  List<String> categories;
   String name;
   String imageUrl;
   String description;
@@ -20,6 +20,7 @@ class Barberautonomos implements IUser{
   String? token;
 
   Barberautonomos(
+    this.categories,
     this.email,
     this.password,
     this.name,
@@ -35,7 +36,14 @@ class Barberautonomos implements IUser{
   );
 
   factory Barberautonomos.fromMap(Map<dynamic, dynamic> map) {
+    print("CATEGORIES => ${map['categories']}");
     return Barberautonomos(
+      (map['categories'] is List)
+        ? (map['categories'] as List)
+            .where((item) => item != null)
+            .map((item) => item.toString())
+            .toList()
+        : <String>[],
       map['email'] ?? '',
       map['password'] ?? '',
       map['name'] ?? '',
@@ -74,7 +82,6 @@ class Barberautonomos implements IUser{
                 (service) => {
                   'name': service.name,
                   'price': service.price,
-                  'duration': service.duration,
                   'category': service.category,
                   'description': service.description,
                 },

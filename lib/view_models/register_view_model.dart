@@ -1,4 +1,4 @@
-import 'package:barbermanager_fe/models/abstractions/IUser.dart';
+
 import 'package:barbermanager_fe/models/barberAutonomos.dart';
 import 'package:barbermanager_fe/models/customer.dart';
 import 'package:barbermanager_fe/models/user_creddentials.dart';
@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class RegisterViewModel extends ChangeNotifier {
-  IUser? user = null;
+  dynamic? user = null;
   String? username = null;
   String? email = null;
   String cpf = "";
@@ -74,57 +74,6 @@ class RegisterViewModel extends ChangeNotifier {
   }
 
   void submit(context) {
-    if (validateForm()) {
-      Future.microtask(() async {
-        int? userType = await getTypeUser();
-        if (userType != null) {
-          UserType.fromInt(userType) == UserType.barbeiro
-              ? user = Barberautonomos(
-                email!,
-                password!,
-                username!,
-                "",
-                "",
-                5.0,
-                "",
-                "",
-                null,
-                [],
-                cpf,
-                "",
-              )
-              : user = Customer(
-                username!,
-                email!,
-                password!,
-                phone,
-                birthDate!,
-                PreferenceChoices.none,
-                ""
-              );
-            UserRepository.instance.saveInDb(user!);
-            var result = UserRepository.instance.findInDb(email!, password!);
-            if (result != null && result is Customer) {
-              setUserData(result.toMap());
-              Provider.of<AuthProvider>(context, listen: false).login(result.token);
-            Navigator.pushNamed(context, '/first_entry');
-              
-            } else if (result != null && result is Barberautonomos) {
-              setUserData(result.toMap());
-              Provider.of<AuthProvider>(context, listen: false).login(result.token);
-            Navigator.pushNamed(context, '/home');
-            } else {
-              // Handle error case
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Erro ao registrar usuário.')),
-              );
-            }
-        } else {
-          return;
-        }
-      });
-      // Navigate to the next page or show success message
-      // For example: Navigator.pushNamed(context, '/home');
-    } else {}
+    
   }
 }

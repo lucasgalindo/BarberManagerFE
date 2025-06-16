@@ -23,14 +23,12 @@ class FirstEntryViewModel extends ChangeNotifier {
     }
     switch (this.choice) {
       case PreferenceChoices.barber:
-        UserRepository.instance.updatePreference(PreferenceChoices.barber, token);
         Navigator.of(context).pushNamed(
           '/home',
           arguments: {"search": "barbeiros"},
         );
 
       case PreferenceChoices.barberStore:
-        UserRepository.instance.updatePreference(PreferenceChoices.barberStore, token);
         Navigator.of(context).pushNamed(
           '/home',
           arguments: {"search": "barbearias"},

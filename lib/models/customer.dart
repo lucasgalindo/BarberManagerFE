@@ -1,49 +1,50 @@
-import 'package:barbermanager_fe/models/abstractions/IUser.dart';
-import 'package:barbermanager_fe/view_models/first_entry_view_model.dart';
+class Customer {
+  String? token;
+  Usuario? usuario;
 
-class Customer implements IUser {
-  String completeName;
-  @override
-  String email;
-  @override
-  String password;
-  String phone;
-  String birthday;
-  PreferenceChoices choice;
-  String token;
-  Customer(
-    this.completeName,
-    this.email,
-    this.password,
-    this.phone,
-    this.birthday,
-    this.choice,
-    this.token
-  );
+  Customer({this.token, this.usuario});
 
-  factory Customer.fromMap(Map<dynamic, dynamic> map) {
-    return Customer(
-      map["completeName"],
-      map["email"],
-      map["password"],
-      map["phone"],
-      map["birthday"],
-      map["choice"],
-      map["token"]
-    );
+  Customer.fromJson(Map<String, dynamic> json) {
+    token = json['token'];
+    usuario =
+        json['usuario'] != null ? new Usuario.fromJson(json['usuario']) : null;
   }
-  
-  @override
-  Map<String, dynamic> toMap() {
-    return {
-       "completeName": completeName,
-       "email": email,
-       "password": password,
-       "phone": phone,
-       "birthday": birthday,
-       "choice": choice.index,
-       "token": token,
-    };
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['token'] = this.token;
+    if (this.usuario != null) {
+      data['usuario'] = this.usuario!.toJson();
+    }
+    return data;
   }
-  
+}
+
+class Usuario {
+  String? nome;
+  String? email;
+  String? endereco;
+  String? tipo;
+
+  Usuario(
+      {this.nome,
+      this.email,
+      this.endereco,
+      this.tipo,});
+
+  Usuario.fromJson(Map<String, dynamic> json) {
+    nome = json['nome'];
+    email = json['email'];
+    endereco = json['endereco'];
+    tipo = json['tipo'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['nome'] = nome;
+    data['email'] = email;
+    data['endereco'] = endereco;
+    data['tipo'] = tipo;
+    return data;
+  }
 }

@@ -27,21 +27,18 @@ class BarbershopViewModel {
           BarberService(
             "Corte Masculino",
             30.0,
-            "30 min",
             "Corte",
             "Um corte clássico e moderno para homens.",
           ),
           BarberService(
             "Barba",
             20.0,
-            "20 min",
             "Barba",
             "Aparação e modelagem da barba com perfeição.",
           ),
           BarberService(
             "Coloração",
             50.0,
-            "45 min",
             "Coloração",
             "Coloração capilar para um visual renovado.",
           ),
@@ -89,21 +86,18 @@ class BarbershopViewModel {
           BarberService(
             "Corte Premium",
             40.0,
-            "40 min",
             "Corte",
             "Corte premium com técnicas avançadas.",
           ),
           BarberService(
             "Barba Completa",
             25.0,
-            "25 min",
             "Barba",
             "Barba completa com toalha quente e finalização.",
           ),
           BarberService(
             "Relaxamento Capilar",
             60.0,
-            "60 min",
             "Relaxamento",
             "Relaxamento capilar para cabelos volumosos.",
           ),

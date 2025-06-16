@@ -22,9 +22,9 @@ class _HomeViewState extends State<HomeView> {
 
   Future<void> _loadUserName() async {
     final userData = await getUserData();
-    if (userData != null && userData['completeName'] != null) {
+    if (userData != null && userData['usuario'] != null) {
       setState(() {
-        username = userData['completeName'];
+        username = userData['usuario']['nome'];
       });
     }
   }
@@ -46,14 +46,14 @@ class _HomeViewState extends State<HomeView> {
       },
     );
   }
-  
+    
 
   switchBetweenUserType(String username, int userType) {
       UserType type = UserType.values.firstWhere((e) => e.valor == userType);
       
       switch(type){
         case UserType.barbeiro:
-          return BarberScreen();
+          return BarberScreen(username: username,);
         case UserType.cliente:
           return ClientScreen(username: username);
         case UserType.donoBarbearia:

@@ -28,7 +28,6 @@ class _EmbeddedProtectedScreenState extends State<EmbeddedProtectedScreen> {
       });
     } else {
       setState(() {
-        
         isLoading = false;
       });
     }

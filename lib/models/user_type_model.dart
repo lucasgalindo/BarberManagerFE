@@ -9,9 +9,9 @@ enum UserType {
       (e) => e.valor == value,
       orElse: () => UserType.cliente,
     );
+
   }
 }
-
 class UserTypeModel {
   final UserType userType;
 

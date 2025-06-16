@@ -1,5 +1,6 @@
 import 'package:barbermanager_fe/models/customer.dart';
 import 'package:barbermanager_fe/repositories/user_repository.dart';
+import 'package:barbermanager_fe/utils/shared_preferences_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:barbermanager_fe/widgets/InfoBox.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -17,16 +18,28 @@ class SettingsView extends StatefulWidget {
 
 class _SettingsViewState extends State<SettingsView> {
   bool allowNotification = false;
+  late Customer user;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+  }
+
+
+
+  void getData() async{
+    Map<String, dynamic>? userData = await getUserData();
+    setState(() {
+      user = Customer.fromJson(userData!);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final user = UserRepository.instance.db.firstWhere(
-      (item) => item is Customer && item.token == widget.token,
-      orElse: () => null,
-    );
 
 
-    if(user is Customer){
+    if(user.usuario != null){
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -53,7 +66,7 @@ class _SettingsViewState extends State<SettingsView> {
               title: "Nome do Usuário",
               children: [
                 Text(
-                  user.completeName ?? "",
+                  user.usuario!.nome ?? "",
                   style: const TextStyle(color: Colors.white, fontSize: 16),
                   textAlign: TextAlign.left,
                 ),
@@ -64,7 +77,7 @@ class _SettingsViewState extends State<SettingsView> {
               title: "E-mail",
               children: [
                 Text(
-                  user?.email ?? "",
+                  user.usuario!.email ?? "",
                   style: const TextStyle(color: Colors.white, fontSize: 16),
                   textAlign: TextAlign.left,
                 ),

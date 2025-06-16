@@ -32,24 +32,15 @@ class LoginViewModel extends ChangeNotifier {
     Navigator.pushNamed(context, '/first_entry');
   }
 
-  void login(context, UserType? tipo) {
-    if (tipo != null) {
-      var result = UserRepository.instance.findInDb(email, password);
-      if (result != null &&
-          result is Barberautonomos &&
-          tipo == UserType.barbeiro) {
-        approvedLogin(context, result.token);
-        setUserData(result.toMap());
+  void login(context, UserType? tipo) async {
+      var result = await UserRepository.instance.findInDb(email, password);
+      if(result == null){
+        return;
       }
-      if (result != null && result is Customer && tipo == UserType.cliente) {
-        if (result.choice != PreferenceChoices.none) {
-          setUserData(result.toMap());
-          approvedLogin(context, result.token);
-        } else {
-          setUserData(result.toMap());
-          firstLogin(context, result.token);
-        }
+      var costumer = Customer.fromJson(result);
+      if (costumer.usuario!.tipo == "CLIENTE") {
+        setUserData(result);
+        approvedLogin(context, costumer.token);
       }
-    }
   }
 }
