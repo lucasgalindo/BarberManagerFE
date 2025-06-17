@@ -32,9 +32,9 @@ class _BarberViewState extends State<BarberView> {
 
   Future<void> _loadUserName() async {
     final userData = await getUserData();
-    if (userData != null && userData['completeName'] != null) {
+    if (userData != null && userData['usuario'] != null) {
       setState(() {
-        username = userData['completeName'];
+        username = userData['usuario']['nome'];
       });
     }
   }

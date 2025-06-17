@@ -6,10 +6,7 @@ import 'package:barbermanager_fe/widgets/box_of_carousel.dart';
 import 'package:barbermanager_fe/widgets/BarberServiceCard.dart';
 
 class BarbershopServicesView extends StatefulWidget {
-
-  const BarbershopServicesView({
-    Key? key
-  }) : super(key: key);
+  const BarbershopServicesView({Key? key}) : super(key: key);
 
   @override
   _BarbershopServicesViewState createState() => _BarbershopServicesViewState();
@@ -26,6 +23,17 @@ class _BarbershopServicesViewState extends State<BarbershopServicesView> {
 
   @override
   Widget build(BuildContext context) {
+    if (barbershop == null) {
+      return const Scaffold(
+        backgroundColor: Color.fromARGB(255, 18, 18, 18),
+        body: Center(
+          child: Text(
+            'Barbearia não encontrada.',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      );
+    }
     final filteredServices =
         barbershop.services.where((service) {
           return selectedCategory == null ||
@@ -103,8 +111,7 @@ class _BarbershopServicesViewState extends State<BarbershopServicesView> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder:
-                                      (context) => BarberChoiceView(),
+                                  builder: (context) => BarberChoiceView(),
                                 ),
                               );
                             },

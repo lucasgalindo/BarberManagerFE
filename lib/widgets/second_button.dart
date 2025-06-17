@@ -24,10 +24,9 @@ class SecondButton extends StatelessWidget {
         style: OutlinedButton.styleFrom(
           side: const BorderSide(width: 2, color: _primaryColor),
           padding: const EdgeInsets.symmetric(vertical: 24.0),
-          backgroundColor: Colors.transparent, 
+          backgroundColor: Colors.transparent,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
-        
 
         onPressed: onPressed,
         child: Text(
