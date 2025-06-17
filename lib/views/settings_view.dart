@@ -18,28 +18,52 @@ class SettingsView extends StatefulWidget {
 
 class _SettingsViewState extends State<SettingsView> {
   bool allowNotification = false;
-  late Customer user;
+  Customer? user;
+  bool isLoading = true;
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-
+    getData();
   }
 
-
-
-  void getData() async{
+  void getData() async {
     Map<String, dynamic>? userData = await getUserData();
     setState(() {
-      user = Customer.fromJson(userData!);
+      if (userData != null) {
+        user = Customer.fromJson(userData);
+      }
+      isLoading = false;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return const Scaffold(
+        backgroundColor: Color.fromARGB(255, 18, 18, 18),
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
 
+    if (user == null) {
+      return Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: const Text('Configurações'),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+        ),
+        body: const Center(
+          child: Text(
+            'Usuário não encontrado.',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+        backgroundColor: const Color.fromARGB(255, 18, 18, 18),
+      );
+    }
 
-    if(user.usuario != null){
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -66,7 +90,7 @@ class _SettingsViewState extends State<SettingsView> {
               title: "Nome do Usuário",
               children: [
                 Text(
-                  user.usuario!.nome ?? "",
+                  user!.usuario!.nome ?? "",
                   style: const TextStyle(color: Colors.white, fontSize: 16),
                   textAlign: TextAlign.left,
                 ),
@@ -77,7 +101,7 @@ class _SettingsViewState extends State<SettingsView> {
               title: "E-mail",
               children: [
                 Text(
-                  user.usuario!.email ?? "",
+                  user!.usuario!.email ?? "",
                   style: const TextStyle(color: Colors.white, fontSize: 16),
                   textAlign: TextAlign.left,
                 ),
@@ -146,24 +170,5 @@ class _SettingsViewState extends State<SettingsView> {
         ),
       ),
     );
-  
-    }
-    else {
-      return Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: const Text('Configurações'),
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-        ),
-        body: const Center(
-          child: Text(
-            'Usuário não encontrado.',
-            style: TextStyle(color: Colors.white),
-          ),
-        ),
-        backgroundColor: const Color.fromARGB(255, 18, 18, 18),
-      );
-    }
   }
 }

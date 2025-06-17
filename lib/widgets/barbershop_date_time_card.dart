@@ -4,14 +4,16 @@ import 'package:flutter/material.dart';
 class BarbershopDateTimeCard extends StatelessWidget {
   final Servico service;
   final VoidCallback onTap;
-  final VoidCallback onDelete; // NOVO
+  final VoidCallback onDelete;
   final String? selectedTime;
+  final String? selectedDate; // ADICIONADO
 
   const BarbershopDateTimeCard({
     required this.service,
     required this.onTap,
-    required this.onDelete, // NOVO
+    required this.onDelete,
     this.selectedTime,
+    this.selectedDate, // ADICIONADO
   });
 
   @override
@@ -19,15 +21,14 @@ class BarbershopDateTimeCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(0),
       child: Container(
-        padding: const EdgeInsets.all(12.0),
-
+        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 16.0),
         child: Column(
           children: [
             ElevatedButton(
-              onPressed: onTap, // Chama o callback recebido
+              onPressed: onTap,
               clipBehavior: Clip.antiAlias,
               style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.all(12.0),
+                padding: const EdgeInsets.all(16.0),
                 backgroundColor: const Color.fromARGB(255, 18, 18, 18),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.0),
@@ -52,7 +53,7 @@ class BarbershopDateTimeCard extends StatelessWidget {
                           ),
                           radius: 30,
                         ),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: 16),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -79,6 +80,17 @@ class BarbershopDateTimeCard extends StatelessWidget {
                                 overflow: TextOverflow.visible,
                               ),
                               const SizedBox(height: 4),
+                              if (selectedDate != null)
+                                Text(
+                                  "Data Selecionada: $selectedDate",
+                                  style: const TextStyle(
+                                    color: Colors.white70,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w200,
+                                  ),
+                                  softWrap: true,
+                                  overflow: TextOverflow.visible,
+                                ),
                               if (selectedTime != null)
                                 Text(
                                   "Horário Selecionado: $selectedTime",
@@ -124,7 +136,6 @@ class BarbershopDateTimeCard extends StatelessWidget {
                 ],
               ),
             ),
-            
           ],
         ),
       ),
