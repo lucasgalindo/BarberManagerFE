@@ -11,7 +11,8 @@ class SummaryView extends StatefulWidget {
   State<SummaryView> createState() => _SummaryViewState();
 }
 
-class _SummaryViewState extends State<SummaryView> with SingleTickerProviderStateMixin {
+class _SummaryViewState extends State<SummaryView>
+    with SingleTickerProviderStateMixin {
   bool showSuccess = false;
   bool showCheck = false;
 
@@ -23,7 +24,9 @@ class _SummaryViewState extends State<SummaryView> with SingleTickerProviderStat
     setState(() => showCheck = true);
     await Future.delayed(const Duration(milliseconds: 1200));
     if (mounted) {
-      Navigator.of(context).pushNamedAndRemoveUntil('/agendamentos', (route) => false);
+      Navigator.of(
+        context,
+      ).pushNamedAndRemoveUntil('/agendamentos', (route) => false);
     }
   }
 
@@ -86,20 +89,29 @@ class _SummaryViewState extends State<SummaryView> with SingleTickerProviderStat
                 const SizedBox(height: 8),
 
                 // Caixa Data e Hora
-                // InfoBox(
-                //   title: "Data e Hora",
-                //   children:
-                //       data.agendamentos.map((service) {
-                //         return Text(
-                //           "${service.dateTime!.toIso8601String().split("T")[0]} às ${service.dateTime!.toIso8601String().split("T")[1].substring(0, 5)}",
-                //           style: const TextStyle(
-                //             color: Colors.white,
-                //             fontSize: 14,
-                //             fontWeight: FontWeight.w300,
-                //           ),
-                //         );
-                //       }).toList(),
-                // ),
+                InfoBox(
+                  title: "Data e Hora",
+                  children:
+                      data.agendamentos.map((service) {
+                        final selectedDate =
+                            data.selectedDatePerService[service];
+                        final selectedTime =
+                            data.selectedTimePerService[service];
+                        String dateStr =
+                            selectedDate != null
+                                ? "${selectedDate.day.toString().padLeft(2, '0')}/${selectedDate.month.toString().padLeft(2, '0')}/${selectedDate.year}"
+                                : "--/--/----";
+                        String timeStr = selectedTime ?? "--:--";
+                        return Text(
+                          "$dateStr às $timeStr",
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w300,
+                          ),
+                        );
+                      }).toList(),
+                ),
                 const SizedBox(height: 8),
 
                 // Caixa Contato da Barbearia
@@ -180,10 +192,7 @@ class _SummaryViewState extends State<SummaryView> with SingleTickerProviderStat
                   ),
                 ),
                 const Spacer(),
-                PrimaryButton(
-                  text: "Finalizar",
-                  onPressed: _finalizar,
-                ),
+                PrimaryButton(text: "Finalizar", onPressed: _finalizar),
               ],
             ),
           ),

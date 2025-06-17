@@ -4,7 +4,7 @@ class Barber {
   final String description;
   final List<String> services; // Serviços que o barbeiro realiza
   final List<String> availableTimes; // Horários disponíveis para o barbeiro
-  final List<String> reservedTimes; // Horários já reservados
+  final List<DateTime> reservedTimes; // Horários já reservados
 
   Barber({
     required this.name,
@@ -12,6 +12,6 @@ class Barber {
     required this.description,
     required this.services,
     required this.availableTimes,
-    this.reservedTimes = const [], // Inicializa como vazio por padrão
-  });
+    List<DateTime>? reservedTimes,
+  }) : reservedTimes = reservedTimes ?? [];
 }

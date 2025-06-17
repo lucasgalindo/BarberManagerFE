@@ -1,7 +1,6 @@
 import 'package:barbermanager_fe/models/barber.dart';
 import 'package:barbermanager_fe/models/barber_shop.dart';
 import 'package:barbermanager_fe/models/barberservice.dart';
-import 'package:barbermanager_fe/models/customer.dart';
 
 class AgendamentoService {
   Barbershop? barbershop;
@@ -9,7 +8,7 @@ class AgendamentoService {
   final List<Servico> _agendamentos = [];
   List<Servico> get agendamentos => _agendamentos;
 
-  final List<Servico> _agendamentosConfirmados = []; // NOVO
+  final List<Servico> _agendamentosConfirmados = [];
   List<Servico> get agendamentosConfirmados => _agendamentosConfirmados;
 
   late BarberService currentService;
@@ -19,17 +18,34 @@ class AgendamentoService {
   final Map<Servico, List<String>> availableTimesPerService = {};
   final Map<Servico, String?> selectedTimePerService = {};
   final Map<Servico, bool> showTimesPerService = {};
+  final Map<Servico, DateTime?> selectedDatePerService = {};
 
   add(Servico servico) {
     _agendamentos.add(servico);
+    availableTimesPerService[servico] = [];
+    selectedTimePerService[servico] = null;
+    showTimesPerService[servico] = false;
+    selectedDatePerService[servico] = null;
   }
 
   remove(int id) {
+    final servico = _agendamentos[id];
     _agendamentos.removeAt(id);
+    availableTimesPerService.remove(servico);
+    selectedTimePerService.remove(servico);
+    showTimesPerService.remove(servico);
+    selectedDatePerService.remove(servico);
   }
 
   removeLast() {
-    _agendamentos.removeLast();
+    if (_agendamentos.isNotEmpty) {
+      final servico = _agendamentos.last;
+      _agendamentos.removeLast();
+      availableTimesPerService.remove(servico);
+      selectedTimePerService.remove(servico);
+      showTimesPerService.remove(servico);
+      selectedDatePerService.remove(servico);
+    }
   }
 
   addBarbershop(Barbershop barbershop) {
@@ -63,46 +79,66 @@ class AgendamentoService {
     add(currentAgendamento);
   }
 
-  /// Retorna uma lista de datas disponíveis para agendamento (próximos 7 dias, exceto domingos)
+  /// Retorna uma lista de datas disponíveis para agendamento (próximos 7 dias, apenas dias em que a barbearia está aberta)
   List<DateTime> getAvailableDates() {
     final now = DateTime.now();
     List<DateTime> availableDates = [];
+    if (barbershop == null) return availableDates;
     for (int i = 0; i < 7; i++) {
       final date = now.add(Duration(days: i));
-      // Exemplo: não permite agendamento aos domingos
-      if (date.weekday != DateTime.sunday) {
+      final weekdayName =
+          [
+            "Domingo",
+            "Segunda",
+            "Terça",
+            "Quarta",
+            "Quinta",
+            "Sexta",
+            "Sábado",
+          ][date.weekday % 7];
+      final workingHours = barbershop!.workingHours[weekdayName];
+      if (workingHours != null && workingHours != "Fechado") {
         availableDates.add(date);
       }
     }
     return availableDates;
   }
 
-  /// Retorna horários disponíveis para um barbeiro em uma data específica
-  List<String> getAvailableTimesForBarber(Barber barber, DateTime date) {
-    // Horários já selecionados para outros serviços nesta data
+  /// Retorna horários disponíveis para um barbeiro em uma data específica, bloqueando horários já reservados e horários já selecionados na sessão
+  List<String> getAvailableTimesForBarber(
+    Barber barber,
+    DateTime date, [
+    Servico? servicoAtual,
+  ]) {
     final selectedTimes =
         selectedTimePerService.entries
             .where(
               (entry) =>
                   entry.key.barber == barber &&
-                  entry.key != currentService && // Não filtra o próprio serviço
-                  selectedDate != null &&
-                  selectedDate!.year == date.year &&
-                  selectedDate!.month == date.month &&
-                  selectedDate!.day == date.day,
+                  // Não bloqueia o horário do próprio serviço (caso esteja editando)
+                  (servicoAtual == null || entry.key != servicoAtual) &&
+                  selectedDatePerService[entry.key]?.year == date.year &&
+                  selectedDatePerService[entry.key]?.month == date.month &&
+                  selectedDatePerService[entry.key]?.day == date.day,
             )
             .map((entry) => entry.value)
             .whereType<String>()
             .toSet();
 
-    // Retorna apenas horários disponíveis e não selecionados em outro serviço
-    return barber.availableTimes
-        .where((time) => !barber.reservedTimes.contains(time))
-        .where((time) => !selectedTimes.contains(time))
-        .toList();
+    return barber.availableTimes.where((time) {
+      // Verifica se já existe um DateTime reservado para esta data e horário
+      final isReserved = barber.reservedTimes.any(
+        (dt) =>
+            dt.year == date.year &&
+            dt.month == date.month &&
+            dt.day == date.day &&
+            dt.hour == int.parse(time.split(':')[0]) &&
+            dt.minute == int.parse(time.split(':')[1]),
+      );
+      return !isReserved && !selectedTimes.contains(time);
+    }).toList();
   }
 
-  /// Retorna horários disponíveis para todos barbeiros em uma data específica
   Map<Barber, List<String>> getAvailableTimesForDate(DateTime date) {
     if (barbershop == null) return {};
     Map<Barber, List<String>> result = {};
@@ -112,12 +148,16 @@ class AgendamentoService {
     return result;
   }
 
-  // Chame este método ao clicar no serviço
   void prepareTimesForService(Servico servico, DateTime selectedDate) {
-    final times = getAvailableTimesForBarber(servico.barber, selectedDate);
+    final times = getAvailableTimesForBarber(
+      servico.barber,
+      selectedDate,
+      servico,
+    );
     availableTimesPerService[servico] = times;
     showTimesPerService[servico] = true;
     selectedTimePerService[servico] ??= null;
+    selectedDatePerService[servico] = selectedDate;
   }
 
   void selectTimeForService(Servico servico, String? time) {
@@ -133,26 +173,56 @@ class AgendamentoService {
     availableTimesPerService.remove(servico);
     selectedTimePerService.remove(servico);
     showTimesPerService.remove(servico);
+    selectedDatePerService.remove(servico);
   }
 
   void confirmarAgendamentos() {
+    for (var servico in _agendamentos) {
+      final selectedDate = selectedDatePerService[servico];
+      final selectedTime = selectedTimePerService[servico];
+      if (selectedDate != null && selectedTime != null) {
+        final parts = selectedTime.split(':');
+        final hour = int.parse(parts[0]);
+        final minute = int.parse(parts[1]);
+        servico.dateTime = DateTime(
+          selectedDate.year,
+          selectedDate.month,
+          selectedDate.day,
+          hour,
+          minute,
+        );
+        final barber = servico.barber;
+        // Só adiciona se ainda não existe para essa data/hora
+        if (!barber.reservedTimes.any(
+          (dt) =>
+              dt.year == servico.dateTime!.year &&
+              dt.month == servico.dateTime!.month &&
+              dt.day == servico.dateTime!.day &&
+              dt.hour == servico.dateTime!.hour &&
+              dt.minute == servico.dateTime!.minute,
+        )) {
+          barber.reservedTimes.add(servico.dateTime!);
+        }
+      }
+    }
     _agendamentosConfirmados.addAll(_agendamentos);
     _agendamentos.clear();
     availableTimesPerService.clear();
     selectedTimePerService.clear();
     showTimesPerService.clear();
+    selectedDatePerService.clear();
   }
 }
 
 class Servico {
-  final DateTime? dateTime;
+  DateTime? dateTime;
   final String name;
   final String description;
   final Barber barber;
   final double price;
   final Barbershop? barbershop;
 
-  const Servico({
+  Servico({
     this.dateTime,
     required this.name,
     required this.description,
