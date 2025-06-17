@@ -33,17 +33,17 @@ class LoginViewModel extends ChangeNotifier {
   }
 
   void login(context, UserType? tipo) async {
-    var result = await UserRepository.instance.findInDb(email, password);
+      var result = await UserRepository.instance.findInDb(email, password);
     if (result == null) {
-      return;
-    }
-    var custumer = Customer.fromJson(result);
+        return;
+      }
+      var custumer = Customer.fromJson(result);
     if (custumer.usuario!.tipo == "CLIENTE") {
-      setUserData(result);
+        setUserData(result);
       approvedLogin(context, custumer.token);
     } else if (custumer.usuario!.tipo == "BARBEIRO") {
       setUserData(result);
       approvedLogin(context, custumer.token);
-    }
+      }
   }
 }
