@@ -163,7 +163,7 @@ class _RecommnedViewState extends State<RecommendView> {
       };
       print(request);
       final response = await http.post(
-        Uri.parse('https://d68b-34-138-92-143.ngrok-free.app/prever_corte'),
+        Uri.parse('https://12e7-34-142-138-253.ngrok-free.app/prever_corte'),
         headers: {'Content-Type': 'application/json'},
         body: json.encode(request),
       );

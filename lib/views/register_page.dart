@@ -50,12 +50,8 @@ class RegisterPage extends StatelessWidget {
                               onChanged: viewModel.updateEmail,
                             ),
                             TextInputField(
-                              hintText: "Celular",
-                              onChanged: viewModel.updatePhone,
-                            ),
-                            TextInputField(
-                              hintText: "Data de nascimento",
-                              onChanged: viewModel.updateBirthDate,
+                              hintText: "Endereço",
+                              onChanged: viewModel.updateEndereco,
                             ),
                             TextInputField(
                               hintText: "Senha",
@@ -65,11 +61,6 @@ class RegisterPage extends StatelessWidget {
                             TextInputField(
                               hintText: "Confirme sua senha",
                               obscureText: true,
-                              onChanged: viewModel.updateConfirmPassword,
-                            ),
-                            if(userType == UserType.donoBarbearia)
-                              TextInputField(
-                              hintText: "CNPJ",
                               onChanged: viewModel.updateConfirmPassword,
                             ),
                             const SizedBox(height: 16),

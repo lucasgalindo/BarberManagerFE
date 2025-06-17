@@ -1,7 +1,3 @@
-
-import 'package:barbermanager_fe/models/barberAutonomos.dart';
-import 'package:barbermanager_fe/models/customer.dart';
-import 'package:barbermanager_fe/view_models/first_entry_view_model.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -40,7 +36,21 @@ class UserRepository {
 
 
   
-  void saveInDb(dynamic user) {
+  void saveInDb(dynamic user) async{
+    var response = await http.post(
+    Uri.parse("${url}/usuarios/cadastro"),
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: jsonEncode(user)); 
+    if(response.statusCode == 201){
+      var data = jsonDecode(response.body);
+      print(data);
+      return data;
 
+  } else {
+    print('Erro: ${response.statusCode}');
+    return null;
+  }
   }
 }

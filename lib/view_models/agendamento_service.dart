@@ -9,8 +9,13 @@ class AgendamentoService {
   final List<Servico> _agendamentos = [];
   List<Servico> get agendamentos => _agendamentos;
 
+<<<<<<< Updated upstream
   final List<Servico> _agendamentosConfirmados = []; // NOVO
   List<Servico> get agendamentosConfirmados => _agendamentosConfirmados;
+=======
+    final List<Servico> _agendamentosConfirmados = []; 
+    List<Servico> get agendamentosConfirmados => _agendamentosConfirmados;
+>>>>>>> Stashed changes
 
   late BarberService currentService;
   Barber? currentBarber;
