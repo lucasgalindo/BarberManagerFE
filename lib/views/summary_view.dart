@@ -153,7 +153,7 @@ class _SummaryViewState extends State<SummaryView>
                                 ),
                               ),
                               Text(
-                                "Profissional: ${service.barber.name}",
+                                "Profissional: ${service.barber!.name}",
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 14,

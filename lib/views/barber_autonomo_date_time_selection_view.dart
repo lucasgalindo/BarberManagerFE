@@ -1,3 +1,5 @@
+import 'package:barbermanager_fe/models/barber.dart';
+import 'package:barbermanager_fe/view_models/agendamento_service.dart';
 import 'package:flutter/material.dart';
 import 'package:barbermanager_fe/models/barberAutonomos.dart';
 import 'package:barbermanager_fe/models/barberservice.dart';
@@ -51,43 +53,26 @@ class _BarberAutonomoDateTimeSelectionViewState
     });
   }
 
+  // Como o novo modelo não tem workingHours, vamos simular horários disponíveis
   List<String> getAvailableTimes(
     String? selectedDate,
     String? selectedWeekday,
   ) {
-    if (selectedWeekday == null) return [];
-    final workingHours = widget.barber.workingHours?[selectedWeekday];
-
-    if (workingHours == null ||
-        workingHours == "Fechado" ||
-        !workingHours.contains('-')) {
-      return [];
-    }
-
-    final hours = workingHours.split(" - ");
-    final opening = _parseTime(hours[0]);
-    final closing = _parseTime(hours[1]);
-
-    final times = <String>[];
-    var current = TimeOfDay(hour: opening.hour, minute: opening.minute);
-
-    while (current.hour < closing.hour ||
-        (current.hour == closing.hour && current.minute < closing.minute)) {
-      times.add(
-        '${current.hour.toString().padLeft(2, '0')}:${current.minute.toString().padLeft(2, '0')}',
-      );
-      final nextMinute = current.minute + 30;
-      current = TimeOfDay(
-        hour: current.hour + (nextMinute >= 60 ? 1 : 0),
-        minute: nextMinute % 60,
-      );
-    }
-    return times;
-  }
-
-  TimeOfDay _parseTime(String time) {
-    final parts = time.split(":");
-    return TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1]));
+    // Exemplo: sempre retorna horários fixos
+    return [
+      "09:00",
+      "09:30",
+      "10:00",
+      "10:30",
+      "11:00",
+      "11:30",
+      "14:00",
+      "14:30",
+      "15:00",
+      "15:30",
+      "16:00",
+      "16:30",
+    ];
   }
 
   @override
@@ -127,45 +112,43 @@ class _BarberAutonomoDateTimeSelectionViewState
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
-                children:
-                    days.map((date) {
-                      final isSelected = selectedDate == date['value'];
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 12),
-                        child: BoxOfCarousel(
-                          isSelected: isSelected,
-                          onTap: () {
-                            setState(() {
-                              selectedDate = date['value'];
-                              selectedTime = null;
-                            });
-                          },
-                          child: Column(
-                            children: [
-                              Text(
-                                date['weekday']!,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                '${date['day']}/${date['month']}',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ],
+                children: days.map((date) {
+                  final isSelected = selectedDate == date['value'];
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 12),
+                    child: BoxOfCarousel(
+                      isSelected: isSelected,
+                      onTap: () {
+                        setState(() {
+                          selectedDate = date['value'];
+                          selectedTime = null;
+                        });
+                      },
+                      child: Column(
+                        children: [
+                          Text(
+                            date['weekday']!,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                      );
-                    }).toList(),
+                          const SizedBox(height: 4),
+                          Text(
+                            '${date['day']}/${date['month']}',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }).toList(),
               ),
             ),
-
             const SizedBox(height: 16),
 
             // Info do Barbeiro
@@ -181,19 +164,13 @@ class _BarberAutonomoDateTimeSelectionViewState
               child: Row(
                 children: [
                   CircleAvatar(
-                    backgroundImage:
-                        widget.barber.imageUrl?.isNotEmpty == true
-                            ? NetworkImage(widget.barber.imageUrl!)
-                            : null,
+                    backgroundColor: Colors.grey[800],
                     radius: 30,
-                    child:
-                        (widget.barber.imageUrl?.isEmpty ?? true)
-                            ? const Icon(
-                              Icons.person,
-                              color: Colors.white,
-                              size: 30,
-                            )
-                            : null,
+                    child: const Icon(
+                      Icons.person,
+                      color: Colors.white,
+                      size: 30,
+                    ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -210,7 +187,7 @@ class _BarberAutonomoDateTimeSelectionViewState
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          widget.barber.description ?? "",
+                          widget.barber.address,
                           style: const TextStyle(
                             color: Colors.white70,
                             fontSize: 14,
@@ -239,7 +216,6 @@ class _BarberAutonomoDateTimeSelectionViewState
                 ],
               ),
             ),
-
             const SizedBox(height: 16),
 
             // Horários disponíveis
@@ -255,26 +231,25 @@ class _BarberAutonomoDateTimeSelectionViewState
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
-                children:
-                    times.map((time) {
-                      final isSelected = selectedTime == time;
-                      return BoxOfCarousel(
-                        isSelected: isSelected,
-                        onTap: () {
-                          setState(() {
-                            selectedTime = time;
-                          });
-                        },
-                        child: Text(
-                          time,
-                          style: const TextStyle(
-                            color: Colors.white70,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      );
-                    }).toList(),
+                children: times.map((time) {
+                  final isSelected = selectedTime == time;
+                  return BoxOfCarousel(
+                    isSelected: isSelected,
+                    onTap: () {
+                      setState(() {
+                        selectedTime = time;
+                      });
+                    },
+                    child: Text(
+                      time,
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  );
+                }).toList(),
               ),
             ] else if (selectedDate != null && times.isEmpty) ...[
               const SizedBox(height: 16),
@@ -301,7 +276,35 @@ class _BarberAutonomoDateTimeSelectionViewState
                   return;
                 }
 
-                // TODO: Coloque aqui a lógica para avançar ou confirmar o agendamento.
+                final agendamentoService = AgendamentoService();
+                final selectedDateTimeParts = selectedTime!.split(":");
+                final selectedDateTime = DateTime(
+                  int.parse(selectedDate!.split("-")[0]),
+                  int.parse(selectedDate!.split("-")[1]),
+                  int.parse(selectedDate!.split("-")[2]),
+                  int.parse(selectedDateTimeParts[0]),
+                  int.parse(selectedDateTimeParts[1]),
+                );
+
+                final servico = Servico(
+                  barber: null,
+                  name: widget.selectedService.name,
+                  description: widget.selectedService.name,
+                  barberautonomos: widget.barber,
+                  price: widget.selectedService.price,
+                  barbershop: null, // Adicione a barbearia se necessário
+                  dateTime: selectedDateTime,
+                );
+
+                agendamentoService.add(servico);
+                agendamentoService.confirmarAgendamentos();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text("Agendamento adicionado com sucesso!"),
+                  ),
+                );
+                Future.delayed(Duration(seconds: 2), () => Navigator.pushNamedAndRemoveUntil(context, "/agendamentos", (Route<dynamic> route) => false),);
+                
               },
             ),
           ],

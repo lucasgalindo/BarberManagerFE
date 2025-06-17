@@ -79,7 +79,7 @@ class _DateTimeSelectionViewState extends State<DateTimeSelectionView> {
             AgendamentoService().availableTimesPerService[servico]!.isEmpty) {
           AgendamentoService().availableTimesPerService[servico] =
               AgendamentoService().getAvailableTimesForBarber(
-                servico.barber,
+                servico.barber!,
                 AgendamentoService().selectedDate!,
               );
         }
@@ -164,7 +164,7 @@ class _DateTimeSelectionViewState extends State<DateTimeSelectionView> {
                                                 .availableTimesPerService[servico] =
                                             AgendamentoService()
                                                 .getAvailableTimesForBarber(
-                                                  servico.barber,
+                                                  servico.barber!,
                                                   date['date'] as DateTime,
                                                 );
                                         AgendamentoService()

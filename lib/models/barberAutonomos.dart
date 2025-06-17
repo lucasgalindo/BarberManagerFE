@@ -1,92 +1,85 @@
-
 import 'barberservice.dart';
 
-class Barberautonomos{
-  List<String> categories;
+class Barberautonomos {
+  int id;
   String name;
-  String imageUrl;
-  String description;
-  double rating;
-  String phone;
-  String address;
-  String cpf;
-  @override
   String email;
-  @override
   String password;
-
-  Map<String, String>? workingHours;
-  List<BarberService> services;
-  String? token;
+  String address;
+  String type;
+  List<Map<String, dynamic>> barbershops;
+  Map<String, dynamic>? barbershop;
+  List<Category> categories;
 
   Barberautonomos(
-    this.categories,
+    this.id,
+    this.name,
     this.email,
     this.password,
-    this.name,
-    this.imageUrl,
-    this.description,
-    this.rating,
-    this.phone,
     this.address,
-    this.workingHours,
-    this.services,
-    this.cpf,
-    this.token,
+    this.type,
+    this.barbershops,
+    this.barbershop,
+    this.categories,
   );
 
   factory Barberautonomos.fromMap(Map<dynamic, dynamic> map) {
-    print("CATEGORIES => ${map['categories']}");
     return Barberautonomos(
-      (map['categories'] is List)
-        ? (map['categories'] as List)
-            .where((item) => item != null)
-            .map((item) => item.toString())
-            .toList()
-        : <String>[],
+      map['id'] ?? 0,
+      map['nome'] ?? '',
       map['email'] ?? '',
-      map['password'] ?? '',
-      map['name'] ?? '',
-      map['imageUrl'] ?? '',
-      map['description'] ?? '',
-      (map['rating'] is double) ? map['rating'] : (map['rating'] ?? 0.0).toDouble(),
-      map['phone'] ?? '',
-      map['address'] ?? '',
-      // workingHours: ensure it's a Map<String, String>
-      (map['workingHours'] as Map?)?.map(
-        (key, value) => MapEntry(key.toString(), value.toString()),
-      ) ?? <String, String>{},
-      // services
-      (map['services'] as List<dynamic>?)
-          ?.map((service) => service is BarberService
-              ? service
-              : BarberService.fromMap(service as Map))
-          .toList() ?? [],
-      map["cpf"] ?? '',
-      map["token"] ?? '',
+      map['senha'] ?? '',
+      map['endereco'] ?? '',
+      map['tipo'] ?? '',
+      (map['barbearias'] as List?)?.map((item) => item as Map<String, dynamic>).toList() ?? [],
+      map['barbearia'] as Map<String, dynamic>?,
+      (map['categoria'] as List?)?.map((item) => Category.fromMap(item as Map<String, dynamic>)).toList() ?? [],
     );
   }
+
   Map<String, dynamic> toMap() {
     return {
-      'name': name,
-      'imageUrl': imageUrl,
-      'description': description,
-      'rating': rating,
-      'phone': phone,
-      'address': address,
-      'cpf': cpf,
-      'token': token,
-      'workingHours': workingHours,
-      'services':
-          services.map(
-                (service) => {
-                  'name': service.name,
-                  'price': service.price,
-                  'category': service.category,
-                  'description': service.description,
-                },
-              )
-              .toList(),
+      'id': id,
+      'nome': name,
+      'email': email,
+      'senha': password,
+      'endereco': address,
+      'tipo': type,
+      'barbearias': barbershops,
+      'barbearia': barbershop,
+      'categoria': categories.map((category) => category.toMap()).toList(),
+    };
+  }
+}
+
+class Category {
+  int id;
+  String name;
+  String description;
+  List<BarberService> services;
+
+  Category(
+    this.id,
+    this.name,
+    this.description,
+    this.services,
+  );
+
+  factory Category.fromMap(Map<dynamic, dynamic> map) {
+    return Category(
+      map['id'] ?? 0,
+      map['nome'] ?? '',
+      map['descricao'] ?? '',
+      (map['servico'] as List?)?.map((item) => BarberService.fromMap(item as Map<String, dynamic>)).toList() ?? [],
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'nome': name,
+      'descricao': description,
+      'servico': services.map((service) => service.toMap()).toList(),
     };
   }
 }

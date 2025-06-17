@@ -38,10 +38,11 @@ class _BarberScreenState extends State<BarberScreen> {
   ];
 
   List<BarberService> get filteredServices {
-    if (barberAutonomo! == null) return [];
-    return barberAutonomo!.services.where((service) {
-      return selectedCategory == null || service.category == selectedCategory;
-    }).toList();
+    if (barberAutonomo == null) return [];
+    return barberAutonomo!.categories
+        .expand((category) => category.services.where(
+            (service) => selectedCategory == null || service.name == selectedCategory))
+        .toList();
   }
 
   @override

@@ -8,7 +8,7 @@ class BarberAutonomoServicesView extends StatefulWidget {
   final Barberautonomos barber;
 
   const BarberAutonomoServicesView({Key? key, required this.barber})
-    : super(key: key);
+      : super(key: key);
 
   @override
   State<BarberAutonomoServicesView> createState() =>
@@ -17,30 +17,19 @@ class BarberAutonomoServicesView extends StatefulWidget {
 
 class _BarberAutonomoServicesViewState
     extends State<BarberAutonomoServicesView> {
-  String? selectedCategory;
+  Category? selectedCategory;
 
   @override
   void initState() {
     super.initState();
-    final categories =
-        widget.barber.services
-            ?.map((service) => service.category)
-            .toSet()
-            .toList();
-    selectedCategory =
-        (categories != null && categories.isNotEmpty) ? categories.first : null;
+    if (widget.barber.categories.isNotEmpty) {
+      selectedCategory = widget.barber.categories.first;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final services = widget.barber.services ?? [];
-    final categories = services.map((s) => s.category).toSet().toList();
-
-    final filteredServices =
-        services.where((service) {
-          return selectedCategory == null ||
-              service.category == selectedCategory;
-        }).toList();
+    final categories = widget.barber.categories;
 
     return Scaffold(
       appBar: AppBar(
@@ -72,70 +61,68 @@ class _BarberAutonomoServicesViewState
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
-                children:
-                    categories.map((category) {
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 12),
-                        child: BoxOfCarousel(
-                          isSelected: selectedCategory == category,
-                          child: Text(
-                            category,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          onTap: () {
-                            setState(() {
-                              selectedCategory = category;
-                            });
-                          },
+                children: categories.map((category) {
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 12),
+                    child: BoxOfCarousel(
+                      isSelected: selectedCategory == category,
+                      child: Text(
+                        category.name,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
                         ),
-                      );
-                    }).toList(),
+                      ),
+                      onTap: () {
+                        setState(() {
+                          selectedCategory = category;
+                        });
+                      },
+                    ),
+                  );
+                }).toList(),
               ),
             ),
             const SizedBox(height: 16),
 
             // Lista de serviços filtrados
             Expanded(
-              child:
-                  filteredServices.isNotEmpty
-                      ? ListView.separated(
-                        itemCount: filteredServices.length,
-                        separatorBuilder:
-                            (context, index) => const SizedBox(height: 12),
-                        itemBuilder: (context, index) {
-                          final service = filteredServices[index];
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder:
-                                      (context) =>
-                                          BarberAutonomoDateTimeSelectionView(
-                                            barber: widget.barber,
-                                            selectedService: service,
-                                          ),
+              child: selectedCategory != null &&
+                      selectedCategory!.services.isNotEmpty
+                  ? ListView.separated(
+                      itemCount: selectedCategory!.services.length,
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: 12),
+                      itemBuilder: (context, index) {
+                        final service = selectedCategory!.services[index];
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    BarberAutonomoDateTimeSelectionView(
+                                  barber: widget.barber,
+                                  selectedService: service,
                                 ),
-                              );
-                            },
-                            child: BarberServiceCard(
-                              title: service.name,
-                              description: service.description,
-                              price: "R\$ ${service.price.toStringAsFixed(2)}",
-                            ),
-                          );
-                        },
-                      )
-                      : const Center(
-                        child: Text(
-                          "Nenhum serviço disponível para esta categoria.",
-                          style: TextStyle(color: Colors.white, fontSize: 16),
-                        ),
+                              ),
+                            );
+                          },
+                          child: BarberServiceCard(
+                            title: service.name,
+                            description: service.description,
+                            price: "R\$ ${service.price.toStringAsFixed(2)}",
+                          ),
+                        );
+                      },
+                    )
+                  : const Center(
+                      child: Text(
+                        "Nenhum serviço disponível para esta categoria.",
+                        style: TextStyle(color: Colors.white, fontSize: 16),
                       ),
+                    ),
             ),
           ],
         ),

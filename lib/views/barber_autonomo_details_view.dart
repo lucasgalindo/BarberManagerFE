@@ -9,8 +9,12 @@ class BarberAutonomoDetailsView extends StatelessWidget {
   const BarberAutonomoDetailsView({Key? key, required this.barber})
     : super(key: key);
 
-  @override  
+  @override
   Widget build(BuildContext context) {
+    // Exemplo: exibir a primeira categoria e seus serviços
+    final firstCategory =
+        barber.categories.isNotEmpty ? barber.categories.first : null;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -22,7 +26,7 @@ class BarberAutonomoDetailsView extends StatelessWidget {
           },
         ),
         title: Text(
-          barber.name,
+          "Detalhes",
           style: const TextStyle(
             color: Colors.white,
             fontSize: 18,
@@ -43,44 +47,52 @@ class BarberAutonomoDetailsView extends StatelessWidget {
                 Center(
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(50),
-                    child:
-                        barber.imageUrl != null && barber.imageUrl!.isNotEmpty
-                            ? Image.network(
-                              barber.imageUrl!,
-                              width: 100,
-                              height: 100,
-                              fit: BoxFit.cover,
-                            )
-                            : Container(
-                              width: double.infinity,
-                              height: 200,
-                              color: Colors.grey[800],
-                              child: const Icon(
-                                Icons.person,
-                                color: Colors.white,
-                                size: 80,
-                              ),
-                            ),
+                    child: Container(
+                      width: 100,
+                      height: 100,
+                      color: Colors.grey[800],
+                      child: const Icon(
+                        Icons.person,
+                        color: Colors.white,
+                        size: 80,
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 18),
+                const Text(
+                  "Nome:",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  barber.name,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  "Contato:",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 4),
                 Row(
                   children: [
-                    const Icon(Icons.star, color: Colors.yellow, size: 12),
+                    const Icon(Icons.email, color: Colors.white, size: 12),
                     const SizedBox(width: 4),
                     Text(
-                      (barber.rating ?? 0).toStringAsFixed(1),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    const Icon(Icons.phone, color: Colors.white, size: 12),
-                    const SizedBox(width: 4),
-                    Text(
-                      barber.phone ?? "",
+                      barber.email,
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 14,
@@ -89,51 +101,18 @@ class BarberAutonomoDetailsView extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 18),
+                const SizedBox(height: 12),
                 const Text(
-                  "Horário de atendimento",
+                  "Endereço:",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 12),
-                barber.workingHours != null
-                    ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children:
-                          barber.workingHours!.entries.map((entry) {
-                            return Text(
-                              "${entry.key}: ${entry.value}",
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            );
-                          }).toList(),
-                    )
-                    : const Text(
-                      "Horário não informado",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                const SizedBox(height: 18),
-                const Text(
-                  "Descrição",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 4),
                 Text(
-                  barber.description ?? "",
+                  barber.address,
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 14,

@@ -8,54 +8,50 @@ class BarberAutonomoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      color: const Color.fromRGBO(30, 30, 30, 1),
+    return Container(
+      decoration: ShapeDecoration(
+        color: const Color.fromRGBO(30, 30, 30, 0.2),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+          side: const BorderSide(
+            color: Color.fromRGBO(30, 30, 30, 0.5),
+            width: 1,
+          ),
+        ),
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CircleAvatar(
-              backgroundImage:
-                  barber.imageUrl != null && barber.imageUrl!.isNotEmpty
-                      ? NetworkImage(barber.imageUrl!)
-                      : null,
-              radius: 30,
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    barber.name,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    barber.description ?? '',
-                    style: const TextStyle(color: Colors.white70, fontSize: 14),
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
+            Row(
+              children: [
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Icon(Icons.star, color: Colors.yellow, size: 16),
-                      const SizedBox(width: 4),
                       Text(
-                        barber.rating.toString(),
+                        'Barbeiro: ${barber.name}',
                         style: const TextStyle(
                           color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Endereço: ${barber.address}',
+                        style: const TextStyle(
+                          color: Colors.white70,
                           fontSize: 14,
                         ),
                       ),
+                      const SizedBox(height: 4),
                     ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ],
         ),

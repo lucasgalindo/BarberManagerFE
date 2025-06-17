@@ -34,11 +34,11 @@ class _BarbershopServicesViewState extends State<BarbershopServicesView> {
         ),
       );
     }
-    final filteredServices =
-        barbershop.services.where((service) {
-          return selectedCategory == null ||
-              service.category == selectedCategory;
-        }).toList();
+    // final filteredServices =
+    // (barbershop ?? []).where((service) {
+    //   return selectedCategory == null ||
+    //       service.name == selectedCategory;
+    // }).toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -98,32 +98,32 @@ class _BarbershopServicesViewState extends State<BarbershopServicesView> {
             // Lista de serviços filtrados
             Expanded(
               child:
-                  filteredServices.isNotEmpty
-                      ? ListView.separated(
-                        itemCount: filteredServices.length,
-                        separatorBuilder:
-                            (context, index) => const SizedBox(height: 12),
-                        itemBuilder: (context, index) {
-                          final service = filteredServices[index];
-                          return GestureDetector(
-                            onTap: () {
-                              AgendamentoService().currentService = service;
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => BarberChoiceView(),
-                                ),
-                              );
-                            },
-                            child: BarberServiceCard(
-                              title: service.name,
-                              description: service.description,
-                              price: "R\$ ${service.price.toStringAsFixed(2)}",
-                            ),
-                          );
-                        },
-                      )
-                      : const Center(
+                  // filteredServices.isNotEmpty
+                  //     ? ListView.separated(
+                  //       itemCount: filteredServices.length,
+                  //       separatorBuilder:
+                  //           (context, index) => const SizedBox(height: 12),
+                  //       itemBuilder: (context, index) {
+                  //         final service = filteredServices[index];
+                  //         return GestureDetector(
+                  //           onTap: () {
+                  //             AgendamentoService().currentService = service;
+                  //             Navigator.push(
+                  //               context,
+                  //               MaterialPageRoute(
+                  //                 builder: (context) => BarberChoiceView(),
+                  //               ),
+                  //             );
+                  //           },
+                  //           child: BarberServiceCard(
+                  //             title: service.name,
+                  //             description: service.description,
+                  //             price: "R\$ ${service.price.toStringAsFixed(2)}",
+                  //           ),
+                  //         );
+                  //       },
+                  //     ):
+                       const Center(
                         child: Text(
                           "Nenhum serviço disponível para esta categoria.",
                           style: TextStyle(color: Colors.white, fontSize: 16),

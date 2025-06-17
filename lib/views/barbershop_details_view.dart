@@ -133,12 +133,9 @@ class BarbershopDetailsView extends StatelessWidget {
               child: PrimaryButton(
                 text: "Agendar",
                 onPressed: () {
-                AgendamentoService().addBarbershop(barbershop);
+                  AgendamentoService().addBarbershop(barbershop);
 
-                  Navigator.pushNamed(
-                    context,
-                    "/barbershop_services",
-                  );
+                  Navigator.pushNamed(context, "/barbershop_services");
                 },
               ),
             ),

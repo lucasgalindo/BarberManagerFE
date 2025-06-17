@@ -1,3 +1,5 @@
+import 'package:barbermanager_fe/models/finalAgendamento.dart';
+import 'package:barbermanager_fe/repositories/user_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:barbermanager_fe/view_models/agendamento_service.dart';
 
@@ -10,9 +12,9 @@ class ScheduledServicesView extends StatefulWidget {
 
 class _ScheduledServicesViewState extends State<ScheduledServicesView> {
   final AgendamentoService agendamentoService = AgendamentoService();
-
-  void _showAgendamentoPopup(BuildContext context, Servico servico) {
-    final dateTime = servico.dateTime;
+  List<FinalAgendamento> agendamentos = [];
+  void _showAgendamentoPopup(BuildContext context, FinalAgendamento servico) {
+    final dateTime = servico.dataHorario;
     String dateStr =
         dateTime != null
             ? "${dateTime.day.toString().padLeft(2, '0')}/${dateTime.month.toString().padLeft(2, '0')}/${dateTime.year}"
@@ -41,7 +43,7 @@ class _ScheduledServicesViewState extends State<ScheduledServicesView> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    servico.name,
+                    servico.tipoServico,
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 18,
@@ -50,7 +52,7 @@ class _ScheduledServicesViewState extends State<ScheduledServicesView> {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    "Profissional: ${servico.barber.name}",
+                    "Profissional: ${servico.barbeiroNome ?? ""}",
                     style: const TextStyle(color: Colors.white70, fontSize: 15),
                   ),
                   const SizedBox(height: 8),
@@ -65,26 +67,10 @@ class _ScheduledServicesViewState extends State<ScheduledServicesView> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    "Preço: R\$ ${servico.price.toStringAsFixed(2)}",
+                    "Preço: R\$ ${servico.price.toStringAsFixed(2) ?? ""}",
                     style: const TextStyle(color: Colors.white, fontSize: 15),
                   ),
-                  if (servico.barbershop != null) ...[
-                    const SizedBox(height: 8),
-                    Text(
-                      "Barbearia: ${servico.barbershop!.name}",
-                      style: const TextStyle(
-                        color: Colors.white70,
-                        fontSize: 15,
-                      ),
-                    ),
-                    Text(
-                      "Endereço: ${servico.barbershop!.address}",
-                      style: const TextStyle(
-                        color: Colors.white70,
-                        fontSize: 15,
-                      ),
-                    ),
-                  ],
+                  
                   const SizedBox(height: 16),
                   // ...existing code...
                   Row(
@@ -103,13 +89,12 @@ class _ScheduledServicesViewState extends State<ScheduledServicesView> {
                               ),
                             ),
                           ),
-                          onPressed: () {
+                          onPressed: () async {
+                            await UserRepository.instance.cancelarAgendamento(servico.id);
+                            await _awaitrequest();
                             setState(() {
-                              agendamentoService.agendamentosConfirmados.remove(
-                                servico,
-                              );
-                            });
                             Navigator.pop(context);
+                            });
                           },
                           child: const Text(
                             "Cancelar",
@@ -160,10 +145,24 @@ class _ScheduledServicesViewState extends State<ScheduledServicesView> {
           ),
     );
   }
+  
+  @override
+  void initState() {
+    super.initState();
+    _awaitrequest();
+  }
+
+  Future<void> _awaitrequest() async{
+       final agendamentoMaps = await UserRepository.instance.getAgendamentos();
+     setState((){
+    agendamentos = agendamentoMaps.map<FinalAgendamento>((map) {
+      return FinalAgendamento.fromJson(map);
+    }).toList();
+     });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final agendamentos = agendamentoService.agendamentosConfirmados;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Meus Agendamentos'),
@@ -182,20 +181,17 @@ class _ScheduledServicesViewState extends State<ScheduledServicesView> {
       body:
           agendamentos.isEmpty
               ? const Center(
-                child: Text(
-                  'Nenhum serviço agendado.',
-                  style: TextStyle(fontSize: 16),
-                ),
+                child: CircularProgressIndicator(),
               )
               : ListView.builder(
                 itemCount: agendamentos.length,
                 itemBuilder: (context, index) {
                   final servico = agendamentos[index];
-                  final dateTime = servico.dateTime;
+                  final dateTime = servico.dataHorario;
                   String dateStr =
                       dateTime != null
                           ? "${dateTime.day.toString().padLeft(2, '0')}/${dateTime.month.toString().padLeft(2, '0')}/${dateTime.year}"
-                          : "--/--/----";
+                          : "--/--/----"; 
                   String timeStr =
                       dateTime != null
                           ? "${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}"
@@ -221,7 +217,7 @@ class _ScheduledServicesViewState extends State<ScheduledServicesView> {
                         color: Colors.white,
                       ),
                       title: Text(
-                        servico.name,
+                        servico.tipoServico,
                         style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -230,9 +226,9 @@ class _ScheduledServicesViewState extends State<ScheduledServicesView> {
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          if (servico.dateTime != null)
+                          if (servico.dataHorario != null)
                             Text(
-                              'Profissional: ${servico.barber.name}',
+                              'Profissional: ${servico.barbeiroNome}',
                               style: const TextStyle(color: Colors.white70),
                             ),
                           Text(

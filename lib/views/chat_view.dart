@@ -25,7 +25,7 @@ class _ChatViewState extends State<ChatView> {
       print("Enviando mensagem: $text");
       final response = await http
           .post(
-            Uri.parse("https://d68b-34-138-92-143.ngrok-free.app/chat"),
+            Uri.parse("https://12e7-34-142-138-253.ngrok-free.app/chat"),
             headers: {
               'Content-Type': 'application/json',
               'Accept': 'application/json',

@@ -1,6 +1,9 @@
 import 'package:barbermanager_fe/models/barber.dart';
+import 'package:barbermanager_fe/models/barberAutonomos.dart';
 import 'package:barbermanager_fe/models/barber_shop.dart';
 import 'package:barbermanager_fe/models/barberservice.dart';
+import 'package:barbermanager_fe/repositories/user_repository.dart';
+import 'package:barbermanager_fe/utils/shared_preferences_utils.dart';
 
 class AgendamentoService {
   Barbershop? barbershop;
@@ -70,6 +73,7 @@ class AgendamentoService {
   addBarber(Barber barber) {
     currentBarber = barber;
     var currentAgendamento = Servico(
+      barberautonomos: null,
       name: currentService.name,
       description: currentService.name,
       barber: currentBarber!,
@@ -115,7 +119,6 @@ class AgendamentoService {
             .where(
               (entry) =>
                   entry.key.barber == barber &&
-                  // Não bloqueia o horário do próprio serviço (caso esteja editando)
                   (servicoAtual == null || entry.key != servicoAtual) &&
                   selectedDatePerService[entry.key]?.year == date.year &&
                   selectedDatePerService[entry.key]?.month == date.month &&
@@ -126,7 +129,6 @@ class AgendamentoService {
             .toSet();
 
     return barber.availableTimes.where((time) {
-      // Verifica se já existe um DateTime reservado para esta data e horário
       final isReserved = barber.reservedTimes.any(
         (dt) =>
             dt.year == date.year &&
@@ -150,7 +152,7 @@ class AgendamentoService {
 
   void prepareTimesForService(Servico servico, DateTime selectedDate) {
     final times = getAvailableTimesForBarber(
-      servico.barber,
+      servico.barber!,
       selectedDate,
       servico,
     );
@@ -176,7 +178,7 @@ class AgendamentoService {
     selectedDatePerService.remove(servico);
   }
 
-  void confirmarAgendamentos() {
+  void confirmarAgendamentos() async {
     for (var servico in _agendamentos) {
       final selectedDate = selectedDatePerService[servico];
       final selectedTime = selectedTimePerService[servico];
@@ -193,7 +195,8 @@ class AgendamentoService {
         );
         final barber = servico.barber;
 
-        if (!barber.reservedTimes.any(
+        // Só adiciona se ainda não existe para essa data/hora
+        if (!barber!.reservedTimes.any(
           (dt) =>
               dt.year == servico.dateTime!.year &&
               dt.month == servico.dateTime!.month &&
@@ -201,10 +204,22 @@ class AgendamentoService {
               dt.hour == servico.dateTime!.hour &&
               dt.minute == servico.dateTime!.minute,
         )) {
-          barber.reservedTimes.add(servico.dateTime!);
+          barber!.reservedTimes.add(servico.dateTime!);
         }
       }
     }
+    var user = await getUserData();
+    agendamentos.forEach(
+      (schedule) => {
+        UserRepository.instance.MakeScheduling(
+          schedule.dateTime!.toIso8601String(),
+          schedule.barber?.name ?? schedule.barberautonomos!.name,
+          user!["usuario"]["nome"],
+          schedule.name,
+          user!["usuario"]["endereco"],
+        ),
+      },
+    );
     _agendamentosConfirmados.addAll(_agendamentos);
     _agendamentos.clear();
     availableTimesPerService.clear();
@@ -218,8 +233,9 @@ class Servico {
   DateTime? dateTime;
   final String name;
   final String description;
-  final Barber barber;
+  final Barber? barber;
   final double price;
+  final Barberautonomos? barberautonomos;
   final Barbershop? barbershop;
 
   Servico({
@@ -228,6 +244,7 @@ class Servico {
     required this.description,
     required this.barber,
     required this.price,
+    required this.barberautonomos,
     required this.barbershop,
   });
 }
