@@ -54,7 +54,6 @@ class MyApp extends StatelessWidget {
                 EmbeddedProtectedScreen(child: BarbershopServicesView()),
         "/summary": (context) => EmbeddedProtectedScreen(child: SummaryView()),
         '/agendamentos': (context) => ScheduledServicesView(),
-        
       },
     );
   }

@@ -178,7 +178,7 @@ class AgendamentoService {
     selectedDatePerService.remove(servico);
   }
 
-  void confirmarAgendamentos() async{
+  void confirmarAgendamentos() async {
     for (var servico in _agendamentos) {
       final selectedDate = selectedDatePerService[servico];
       final selectedTime = selectedTimePerService[servico];
@@ -194,6 +194,7 @@ class AgendamentoService {
           minute,
         );
         final barber = servico.barber;
+
         // Só adiciona se ainda não existe para essa data/hora
         if (!barber!.reservedTimes.any(
           (dt) =>
@@ -208,10 +209,17 @@ class AgendamentoService {
       }
     }
     var user = await getUserData();
-    agendamentos.forEach((schedule) => {
-      
-      UserRepository.instance.MakeScheduling(schedule.dateTime!.toIso8601String(), schedule.barber?.name ?? schedule.barberautonomos!.name, user!["usuario"]["nome"], schedule.name, user!["usuario"]["endereco"])
-    });
+    agendamentos.forEach(
+      (schedule) => {
+        UserRepository.instance.MakeScheduling(
+          schedule.dateTime!.toIso8601String(),
+          schedule.barber?.name ?? schedule.barberautonomos!.name,
+          user!["usuario"]["nome"],
+          schedule.name,
+          user!["usuario"]["endereco"],
+        ),
+      },
+    );
     _agendamentosConfirmados.addAll(_agendamentos);
     _agendamentos.clear();
     availableTimesPerService.clear();
@@ -237,6 +245,6 @@ class Servico {
     required this.barber,
     required this.price,
     required this.barberautonomos,
-    required this.barbershop
+    required this.barbershop,
   });
 }

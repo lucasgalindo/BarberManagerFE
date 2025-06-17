@@ -45,67 +45,84 @@ class _BarberViewState extends State<BarberView> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0),
       drawer: CustomDrawer(username: username),
-      body: Column(
-        children: [
-          const SizedBox(height: 12),
-          SizedBox(
-            height: 60,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              itemCount: filters.length,
-              itemBuilder: (context, index) {
-                final filter = filters[index];
-                return Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: BoxOfCarousel(
-                    isSelected: filter == selectedFilter,
-                    child: Center(
-                      child: Text(
-                        filter,
-                        style: const TextStyle(color: Colors.white),
+      body: Padding(
+        padding: EdgeInsets.all(12.0),
+        child: Column(
+          children: [
+            const SizedBox(height: 12),
+            SizedBox(
+              height: 60,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: filters.length,
+                itemBuilder: (context, index) {
+                  final filter = filters[index];
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: BoxOfCarousel(
+                      isSelected: filter == selectedFilter,
+                      child: Center(
+                        child: Text(
+                          filter,
+                          style: const TextStyle(color: Colors.white),
+                        ),
                       ),
+                      onTap: () {
+                        setState(() {
+                          selectedFilter = filter;
+                        });
+                      },
                     ),
-                    onTap: () {
-                      setState(() {
-                        selectedFilter = filter;
-                      });
-                    },
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                const Text(
+                  'Selecione um barbeiro abaixo',
+                  textAlign: TextAlign.start,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
                   ),
-                );
-              },
+                ),
+              ],
             ),
-          ),
-          const SizedBox(height: 12),
-          Expanded(
-            child: ListView.builder(
-              itemCount: barbers.length,
-              itemBuilder: (context, index) {
-                final barber = barbers[index];
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder:
-                            (context) =>
-                                BarberAutonomoDetailsView(barber: barber),
-                      ),
-                    );
-                  },
-                  child: BarberAutonomoCard(barber: barber),
-                );
-              },
+            const SizedBox(height: 12),
+            Expanded(
+              child: ListView.builder(
+                itemCount: barbers.length,
+                itemBuilder: (context, index) {
+                  final barber = barbers[index];
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (context) =>
+                                    BarberAutonomoDetailsView(barber: barber),
+                          ),
+                        );
+                      },
+                      child: BarberAutonomoCard(barber: barber),
+                    ),
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
