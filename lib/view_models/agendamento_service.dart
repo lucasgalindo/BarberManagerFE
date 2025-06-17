@@ -192,7 +192,7 @@ class AgendamentoService {
           minute,
         );
         final barber = servico.barber;
-        // Só adiciona se ainda não existe para essa data/hora
+
         if (!barber.reservedTimes.any(
           (dt) =>
               dt.year == servico.dateTime!.year &&

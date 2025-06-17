@@ -51,7 +51,7 @@ class BarbershopViewModel {
             description: "Ótimo barbeiro com experiência em cortes modernos.",
             services: ["Corte Masculino", "Barba"],
             availableTimes: ["09:00", "10:00", "11:00", "14:00", "15:00"],
-            reservedTimes: <DateTime>[], // Exemplo de horário reservado
+            reservedTimes: <DateTime>[],
           ),
           Barber(
             name: "Carlos Souza",
@@ -60,7 +60,7 @@ class BarbershopViewModel {
             description: "Ótimo barbeiro com experiência em coloração.",
             services: ["Coloração", "Barba"],
             availableTimes: ["10:00", "11:00", "13:00", "16:00"],
-            reservedTimes: <DateTime>[], // Exemplo de horário reservado
+            reservedTimes: <DateTime>[],
           ),
         ],
       ),
