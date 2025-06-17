@@ -7,10 +7,13 @@ class BarberAutonomoDetailsView extends StatelessWidget {
   final Barberautonomos barber;
 
   const BarberAutonomoDetailsView({Key? key, required this.barber})
-    : super(key: key);
+      : super(key: key);
 
-  @override  
+  @override
   Widget build(BuildContext context) {
+    // Exemplo: exibir a primeira categoria e seus serviços
+    final firstCategory = barber.categories.isNotEmpty ? barber.categories.first : null;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -43,44 +46,25 @@ class BarberAutonomoDetailsView extends StatelessWidget {
                 Center(
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(50),
-                    child:
-                        barber.imageUrl != null && barber.imageUrl!.isNotEmpty
-                            ? Image.network(
-                              barber.imageUrl!,
-                              width: 100,
-                              height: 100,
-                              fit: BoxFit.cover,
-                            )
-                            : Container(
-                              width: double.infinity,
-                              height: 200,
-                              color: Colors.grey[800],
-                              child: const Icon(
-                                Icons.person,
-                                color: Colors.white,
-                                size: 80,
-                              ),
-                            ),
+                    child: Container(
+                      width: 100,
+                      height: 100,
+                      color: Colors.grey[800],
+                      child: const Icon(
+                        Icons.person,
+                        color: Colors.white,
+                        size: 80,
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 18),
                 Row(
                   children: [
-                    const Icon(Icons.star, color: Colors.yellow, size: 12),
+                    const Icon(Icons.email, color: Colors.white, size: 12),
                     const SizedBox(width: 4),
                     Text(
-                      (barber.rating ?? 0).toStringAsFixed(1),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    const Icon(Icons.phone, color: Colors.white, size: 12),
-                    const SizedBox(width: 4),
-                    Text(
-                      barber.phone ?? "",
+                      barber.email,
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 14,
@@ -91,40 +75,7 @@ class BarberAutonomoDetailsView extends StatelessWidget {
                 ),
                 const SizedBox(height: 18),
                 const Text(
-                  "Horário de atendimento",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                barber.workingHours != null
-                    ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children:
-                          barber.workingHours!.entries.map((entry) {
-                            return Text(
-                              "${entry.key}: ${entry.value}",
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            );
-                          }).toList(),
-                    )
-                    : const Text(
-                      "Horário não informado",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                const SizedBox(height: 18),
-                const Text(
-                  "Descrição",
+                  "Endereço",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 14,
@@ -133,13 +84,66 @@ class BarberAutonomoDetailsView extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  barber.description ?? "",
+                  barber.address,
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 14,
                     fontWeight: FontWeight.w400,
                   ),
                 ),
+                const SizedBox(height: 18),
+                const Text(
+                  "Categorias e Serviços",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                ...barber.categories.map((category) => Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          category.name,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          category.description,
+                          style: const TextStyle(
+                            color: Colors.white70,
+                            fontSize: 12,
+                          ),
+                        ),
+                        ...category.services.map((service) => Padding(
+                              padding: const EdgeInsets.only(left: 8.0, top: 2),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    service.name,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  Text(
+                                    'R\$ ${service.price.toStringAsFixed(2)}',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )),
+                        const SizedBox(height: 10),
+                      ],
+                    )),
               ],
             ),
             Center(
@@ -149,9 +153,8 @@ class BarberAutonomoDetailsView extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder:
-                          (context) =>
-                              BarberAutonomoServicesView(barber: barber),
+                      builder: (context) =>
+                          BarberAutonomoServicesView(barber: barber),
                     ),
                   );
                 },

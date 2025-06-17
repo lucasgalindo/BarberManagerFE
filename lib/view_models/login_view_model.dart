@@ -19,7 +19,7 @@ class LoginViewModel extends ChangeNotifier {
 
   void updatePassword(String value) {
     password = value;
-    notifyListeners();
+    notifyListeners();  
   }
 
   void approvedLogin(context, token) {

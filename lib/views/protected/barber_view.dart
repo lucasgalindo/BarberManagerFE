@@ -18,6 +18,7 @@ class _BarberViewState extends State<BarberView> {
   String username = "...";
   String? selectedFilter;
 
+  final viewModel = BarberAutonomosViewModel();
   final List<String> filters = [
     "Melhores Avaliados",
     "Mais Próximos",
@@ -30,6 +31,7 @@ class _BarberViewState extends State<BarberView> {
     super.initState();
   }
 
+  List<Barberautonomos> barbers = [];
   Future<void> _loadUserName() async {
     final userData = await getUserData();
     if (userData != null && userData['usuario'] != null) {
@@ -37,26 +39,15 @@ class _BarberViewState extends State<BarberView> {
         username = userData['usuario']['nome'];
       });
     }
+    var data = await viewModel.getBarberAutonomos();
+    setState(() {
+      barbers = data;
+    });
   }
+
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = BarberAutonomosViewModel();
-    final List<Barberautonomos> barbers = viewModel.getBarberAutonomos();
-
-    final filteredBarbers =
-        selectedFilter == null
-            ? barbers
-            : barbers.where((barber) {
-              if (selectedFilter == "Melhores Avaliados") {
-                return (barber.rating ?? 0) >= 4.5;
-              } else if (selectedFilter == "Mais Próximos") {
-                return (barber.address ?? "").contains("Rua");
-              } else if (selectedFilter == "Mais Experientes") {
-                return (barber.description ?? "").contains("Experiência");
-              }
-              return true;
-            }).toList();
 
     return Scaffold(
       appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0),
@@ -95,9 +86,9 @@ class _BarberViewState extends State<BarberView> {
           const SizedBox(height: 12),
           Expanded(
             child: ListView.builder(
-              itemCount: filteredBarbers.length,
+              itemCount: barbers.length,
               itemBuilder: (context, index) {
-                final barber = filteredBarbers[index];
+                final barber = barbers[index];
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(

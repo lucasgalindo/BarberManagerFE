@@ -1,3 +1,4 @@
+import 'package:barbermanager_fe/models/barber_shop.dart';
 import 'package:barbermanager_fe/view_models/auth_provider.dart';
 import 'package:barbermanager_fe/view_models/barbershop_view_model.dart';
 import 'package:barbermanager_fe/views/barbershop_details_view.dart';
@@ -17,6 +18,8 @@ class ClientScreen extends StatefulWidget {
 
 class _ClientScreenState extends State<ClientScreen> {
   String? selectedFilter;
+  final viewModel = BarbershopViewModel();
+  List<Barbershop> barbershops = [];
 
   final List<String> filters = [
     "Mais Próximas",
@@ -25,9 +28,20 @@ class _ClientScreenState extends State<ClientScreen> {
   ];
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetch();
+  }
+
+  void fetch() async{
+      barbershops = await viewModel.getBarbershops();
+    setState(() {
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final viewModel = BarbershopViewModel();
-    final barbershops = viewModel.getBarbershops();
     return ChangeNotifierProvider(
       create: (_) => AuthProvider(),
       child: Consumer<AuthProvider>(

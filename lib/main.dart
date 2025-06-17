@@ -11,7 +11,6 @@ import 'package:barbermanager_fe/views/protected/barber_view.dart';
 import 'package:barbermanager_fe/views/protected/first_entry_login.dart';
 import 'package:barbermanager_fe/views/protected/home_view.dart';
 import 'package:barbermanager_fe/views/register_page.dart';
-import 'package:barbermanager_fe/views/scheduled_service_detail_view.dart';
 import 'package:barbermanager_fe/views/scheduled_services_view.dart';
 import 'package:barbermanager_fe/views/summary_view.dart';
 import 'package:barbermanager_fe/widgets/dashboard_screen.dart';
@@ -55,10 +54,7 @@ class MyApp extends StatelessWidget {
                 EmbeddedProtectedScreen(child: BarbershopServicesView()),
         "/summary": (context) => EmbeddedProtectedScreen(child: SummaryView()),
         '/agendamentos': (context) => ScheduledServicesView(),
-        '/agendamento_detalhe':
-            (context) => ScheduledServiceDetailView(
-              servico: ModalRoute.of(context)!.settings.arguments as Servico,
-            ),
+        
       },
     );
   }
